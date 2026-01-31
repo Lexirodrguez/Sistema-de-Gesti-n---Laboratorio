@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "nombre": "Hematologia Completa",
+        "precio": 15,
+        "descripcion": "Analisis de celulas sanguineas"
+    },
+    {
+        "id": 2,
+        "nombre": "Perfil lipídico",
+        "precio": 20,
+        "descripcion": "Analisis de colesterol y trigliceridos"
+    },
+    {
+        "id": 3,
+        "nombre": "Perfil hepático",
+        "precio": 30,
+        "descripcion": "Analisis de funcionamiento de higado"
+    },
+    {
+        "id": 4,
+        "nombre": "Urianálisis completo",
+        "precio": 50,
+        "descripcion": "Analisis de funcionamiento de riñones"
+    }
+]

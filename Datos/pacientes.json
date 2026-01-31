@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "nombre": "Jesus Gamez",
+        "edad": 18,
+        "cedula": 33407371,
+        "fechaNacimiento": "2007-05-20"
+    },
+    {
+        "id": 2,
+        "nombre": "Leximar Rodriguez",
+        "edad": 18,
+        "cedula": 32462132,
+        "fechaNacimiento": "2007-11-24"
+    },
+    {
+        "id": 3,
+        "nombre": "Deriana Araujo",
+        "edad": 18,
+        "cedula": 31958881,
+        "fechaNacimiento": "2007-07-11"
+    }
+]
