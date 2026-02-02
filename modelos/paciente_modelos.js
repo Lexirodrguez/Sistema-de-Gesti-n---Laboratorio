@@ -42,14 +42,13 @@ class Modelopacientes  {
     async actualizar(id, datosActualizados) {
         try {
             const pacientes = await this.LeerArchivo();
-            const identificador = pacientes.findIndex(p => p.id == id);
+            const index = pacientes.findIndex(p => p.id == id);
 
-            if (identificador === -1) return null;
+            if (index === -1) return null;
 
-            pacientes[identificador] = {...pacientes[identificador], ...datosActualizados };
-
+            pacientes[index] = {...pacientes[index], ...datosActualizados };
             await this.guardarArchivo(pacientes);
-            return pacientes[identificador];
+            return pacientes[index];
             
         } catch (error) {
             return null;

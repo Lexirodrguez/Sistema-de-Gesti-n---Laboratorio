@@ -26,9 +26,9 @@ class Modeloresultados {
     return await this.LeerArchivo();
    }
 
-   async buscarPorId(id) {
+   async buscarporId(id) {
     const resultados = await this.LeerArchivo();
-    return resultados.find(r => r.id === id);
+    return resultados.find(r => r.id === parseInt(id));
    }
 
    async crear(nuevoResultado) {
@@ -41,14 +41,13 @@ class Modeloresultados {
    async actualizar(id, resultadosActualizados) {
     try {
         const resultados = await this.LeerArchivo();
-        const id = resultados.findIndex(r => r.id === id);
+        const index = resultados.findIndex(r => r.id === parseInt(id));
 
-        if (id === -1) return null;
+        if (index === -1) return null;
 
-        resultados [id] = {...resultados[id], ...resultadosActualizados};
-
+        resultados[index] = {...resultados[index], ...resultadosActualizados};
         await this.guardarArchivo(resultados);
-        return resultados[id];
+        return resultados[index];
     }catch (error) {
         return null;
     }

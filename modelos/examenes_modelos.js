@@ -27,29 +27,28 @@ class Modeloexamenes {
         return await this.LeerArchivo();
     }
 
-    async buscarPorId(id) {
+    async buscarporId(id) {
         const examenes = await this.LeerArchivo();
-        return examenes.find(e => e.id === id);
+        return examenes.find(e => e.id === parseInt(id));
     }
 
     async crear(examenNuevo) {
         const examenes = await this.LeerArchivo();
         examenes.push(examenNuevo);
-        await this.guardarArchivo(examanes);
+        await this.guardarArchivo(examenes);
         return examenNuevo;
     }
 
     async actualizar(id, examenActualizado) {
         try {
             const examenes = await this.LeerArchivo();
-            const id = examenes.findIndex(e => e.id === id);
+            const index = examenes.findIndex(e => e.id === id);
 
-            if (id === -1) return null;
+            if (index === -1) return null;
 
-            examenes[id] = {...examenes[id], ...examenActualizado};
-
+            examenes[index] = {...examenes[index], ...examenActualizado};
             await this.guardarArchivo(examenes);
-            return examenes[id];
+            return examenes[index];
 
             } catch (error) {
                 return null;
