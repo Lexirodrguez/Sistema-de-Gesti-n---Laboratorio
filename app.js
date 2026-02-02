@@ -6,9 +6,9 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var pacientesRouter = require("./routes/pacientes");
-var examenesRouter = require("./routes/examenes");
-var resultadosRouter = require("./routes/resultados");
+var pacientesRouter = require("./routes/rutapaciente");
+var examenesRouter = require("./routes/rutaexamenes");
+var resultadosRouter = require("./routes/rutaresultados");
 
 var app = express();
 

@@ -1,4 +1,4 @@
-const Modeloexamenes = require('../modelos/examenes');
+const Modeloexamenes = require('../modelos/examenes_modelos');
 
 const ControladorExamenes = {
     todos: async (req, res) => {

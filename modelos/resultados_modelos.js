@@ -1,4 +1,4 @@
-const fs = requiere("fs/promises");
+const fs = require("fs/promises");
 const path = require("path");
 const pathJSON = path.join(__dirname, "../datos/resultados.json");
 

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const resultadosControlador = require("../controlador/resultadosControlador");
+const resultadosControlador = require("../controladores/resultadosControlador.js");
 
 router.get("/", resultadosControlador.todos);
 router.get("/:id", resultadosControlador.buscarporId);
