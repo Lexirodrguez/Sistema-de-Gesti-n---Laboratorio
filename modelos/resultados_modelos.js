@@ -41,7 +41,7 @@ class Modeloresultados {
    async actualizar(id, resultadosActualizados) {
     try {
         const resultados = await this.LeerArchivo();
-        const index = resultados.findIndex(r => r.id === parseInt(id));
+        const index = resultados.findIndex(r => r.id === id);
 
         if (index === -1) return null;
 
@@ -57,7 +57,7 @@ class Modeloresultados {
    async eliminar (id) {
     try {
         const resultados = await this.LeerArchivo();
-        const resultadosRestantes = resultados.filter(r => r.id !== id);
+        const resultadosRestantes = resultados.filter(r => r.id !== parseInt(id));
         await this.guardarArchivo(resultadosRestantes);
         return true;
     }catch (error) {

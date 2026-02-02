@@ -58,7 +58,7 @@ class Modeloexamenes {
         async eliminar(id) {
             try {
                 const examenes = await this.LeerArchivo();
-                const examenesRestantes = examenes.filter(e => e.id !== id);
+                const examenesRestantes = examenes.filter(e => e.id !== parseInt(id));
 
                 await this.guardarArchivo(examenesRestantes);
                 return true;

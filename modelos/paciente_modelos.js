@@ -29,7 +29,7 @@ class Modelopacientes  {
 
     async buscarporId(id) {
         const pacientes = await this.LeerArchivo();
-        return pacientes.find(p => p.id == id);
+        return pacientes.find(p => p.id === parseInt(id));
     }
 
     async crear(nuevoPaciente) {
@@ -42,7 +42,7 @@ class Modelopacientes  {
     async actualizar(id, datosActualizados) {
         try {
             const pacientes = await this.LeerArchivo();
-            const index = pacientes.findIndex(p => p.id == id);
+            const index = pacientes.findIndex(p => p.id === id);
 
             if (index === -1) return null;
 
@@ -59,7 +59,7 @@ class Modelopacientes  {
     async eliminar(id) {
         try {
         const pacientes = await this.LeerArchivo();
-        const pacientesRestantes = pacientes.filter(p => p.id != id);
+        const pacientesRestantes = pacientes.filter(p => p.id !== parseInt(id));
 
         await this.guardarArchivo(pacientesRestantes);
         return true;
