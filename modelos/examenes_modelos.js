@@ -1,4 +1,3 @@
-const e = require("express");
 const fs = require("fs/promises");
 const path = require("path");
 const pathJSON = path.join(__dirname, "../datos/examenes.json");
