@@ -4,8 +4,8 @@ const examenesControlador = require("../controladores/examenesControlador");
 
 router.get("/", examenesControlador.todos);
 router.get("/:id", examenesControlador.buscarporId);
-router.post("/nuevo", examenesControlador.crear);
-router.put("/:id/editar", examenesControlador.actualizar);
-router.delete("/:id/eliminar", examenesControlador.eliminar);
+router.post("/", examenesControlador.crear);
+router.put("/:id", examenesControlador.actualizar);
+router.delete("/:id", examenesControlador.eliminar);
 
 module.exports = router;
