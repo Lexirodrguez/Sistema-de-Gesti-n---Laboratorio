@@ -41,7 +41,7 @@ class Modeloresultados {
    async actualizar(id, resultadosActualizados) {
     try {
         const resultados = await this.LeerArchivo();
-        const index = resultados.findIndex(r => r.id === id);
+        const index = resultados.findIndex(r => r.id === parseInt(id));
 
         if (index === -1) return null;
 

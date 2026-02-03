@@ -42,7 +42,7 @@ class Modeloexamenes {
     async actualizar(id, examenActualizado) {
         try {
             const examenes = await this.LeerArchivo();
-            const index = examenes.findIndex(e => e.id === id);
+            const index = examenes.findIndex(e => e.id === parseInt(id));
 
             if (index === -1) return null;
 
