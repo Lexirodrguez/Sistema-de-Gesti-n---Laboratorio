@@ -1,62 +1,66 @@
 const ModeloResultados = require("../modelos/resultados_modelos");
 
 const ControladorResultados = {
-    todos: async (req, res) => {
+    todos: async () => {
         try {
             const resultados = await ModeloResultados.todos();
-            res.json({ mensaje: "Resultados obtenidos con éxito", datos: resultados });
+            return { success: true, data: resultados };
         } catch (error) {
-            res.status(500).json({ error: error.mensaje });
+            return { success: false, error: error.message };
         }
     },
-    crear: async (req, res) => {
+    crear: async (nuevoResultado) => {
         try {
-            const nuevoResultado = req.body;
+            // Validación básica
+            if (!nuevoResultado || !nuevoResultado.id || !nuevoResultado.pacienteId || !nuevoResultado.examenId) {
+                return { success: false, error: "Datos incompletos: se requieren id, pacienteId y examenId" };
+            }
             const resultadoCreado = await ModeloResultados.crear(nuevoResultado);
-
-            res.status(201).json({
-                mensaje: "Resultado creado con éxito",
-                datos: resultadoCreado
-            });
+            return { success: true, data: resultadoCreado };
         } catch (error) {
-            res.status(500).json({ mensaje: "Error al guardar" }); // CORREGIDO: "mensaje"
+            return { success: false, error: "Error al guardar" };
         }
     },
-    eliminar: async (req, res) => {
+    eliminar: async (id) => {
         try {
-            const { id } = req.params;
-            await ModeloResultados.eliminar(id);
-            res.json({ mensaje: `Resultado eliminado con éxito` });
-        } catch (error) {
-            res.status(500).json({ error: error.mensaje });
-        }   
-    },
-    buscarporId: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const resultado = await ModeloResultados.buscarporId(id);    
-            if (resultado) {
-                res.json(resultado);
+            const eliminado = await ModeloResultados.eliminar(parseInt(id));
+            if (eliminado) {
+                return { success: true };
             } else {
-                res.status(404).json({ error: "Resultado no encontrado" });
-            } 
-        } catch (error) {
-            res.status(500).json({ error: error.mensaje });
-        }  
-    },
-    actualizar: async (req, res) => {
-        try {   
-            const { id } = req.params;
-            const actualizado = await ModeloResultados.actualizar(id, req.body);
-            if (actualizado) {
-                res.json({ mensaje: "Resultado actualizado", datos: actualizado });
-            } else {
-                res.status(404).json({ error: "No se pudo actualizar, ID no encontrado" });
+                return { success: false, error: "No se pudo eliminar, ID no encontrado" };
             }
         } catch (error) {
-            res.status(500).json({ error: error.mensaje });
+            return { success: false, error: error.message };
+        }
+    },
+    buscarporId: async (id) => {
+        try {
+            const resultado = await ModeloResultados.buscarporId(parseInt(id));
+            if (resultado) {
+                return { success: true, data: resultado };
+            } else {
+                return { success: false, error: "Resultado no encontrado" };
+            }
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    },
+    actualizar: async (id, actualizado) => {
+        try {
+            // Validación básica
+            if (!actualizado || Object.keys(actualizado).length === 0) {
+                return { success: false, error: "Datos de actualización requeridos" };
+            }
+            const resultadoActualizado = await ModeloResultados.actualizar(parseInt(id), actualizado);
+            if (resultadoActualizado) {
+                return { success: true, data: resultadoActualizado };
+            } else {
+                return { success: false, error: "No se pudo actualizar, ID no encontrado" };
+            }
+        } catch (error) {
+            return { success: false, error: error.message };
         }
     }
-};  
+};
 
 module.exports = ControladorResultados;

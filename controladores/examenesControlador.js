@@ -1,62 +1,66 @@
 const Modeloexamenes = require('../modelos/examenes_modelos');
 
 const ControladorExamenes = {
-    todos: async (req, res) => {
+    todos: async () => {
         try {
             const examenes = await Modeloexamenes.todos();
-            res.json({ mensaje: "Examenes obtenidos con éxito", datos: examenes });
+            return { success: true, data: examenes };
         } catch (error) {
-            res.status(500).json({ error: error.mensaje });
+            return { success: false, error: error.message };
         }
     },
-    crear: async (req, res) => {
+    crear: async (nuevoExamen) => {
         try {
-            const nuevoExamen = req.body;
+            // Validación básica
+            if (!nuevoExamen || !nuevoExamen.id || !nuevoExamen.nombre || !nuevoExamen.descripcion) {
+                return { success: false, error: "Datos incompletos: se requieren id, nombre y descripcion" };
+            }
             const examenCreado = await Modeloexamenes.crear(nuevoExamen);
-
-            res.status(201).json({
-                mensaje: "Examen creado con éxito",
-                datos: examenCreado
-            });
+            return { success: true, data: examenCreado };
         } catch (error) {
-            res.status(500).json({ meensaje: "Error al guardar" });
+            return { success: false, error: "Error al guardar" };
         }
     },
-    eliminar: async (req, res) => {
+    eliminar: async (id) => {
         try {
-            const { id } = req.params;
-            await Modeloexamenes.eliminar(id);
-            res.json({ mensaje: `Examen eliminado con éxito` });
-        } catch (error) {
-            res.status(500).json({ error: error.mensaje });
-        }   
-    },
-    buscarporId: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const examen = await Modeloexamenes.buscarporId(id);    
-            if (examen) {
-                res.json(examen);
+            const eliminado = await Modeloexamenes.eliminar(parseInt(id));
+            if (eliminado) {
+                return { success: true };
             } else {
-                res.status(404).json({ error: "Examen no encontrado" });
-            } 
-        } catch (error) {
-            res.status(500).json({ error: error.mensaje });
-        }  
-    },
-    actualizar: async (req, res) => {
-        try {   
-            const { id } = req.params;
-            const actualizado = await Modeloexamenes.actualizar(id, req.body);
-            if (actualizado) {
-                res.json({ mensaje: "Examen actualizado", datos: actualizado });
-            } else {
-                res.status(404).json({ error: "No se pudo actualizar, ID no encontrado" });
+                return { success: false, error: "No se pudo eliminar, ID no encontrado" };
             }
         } catch (error) {
-            res.status(500).json({ error: error.mensaje });
+            return { success: false, error: error.message };
+        }
+    },
+    buscarporId: async (id) => {
+        try {
+            const examen = await Modeloexamenes.buscarporId(parseInt(id));
+            if (examen) {
+                return { success: true, data: examen };
+            } else {
+                return { success: false, error: "Examen no encontrado" };
+            }
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    },
+    actualizar: async (id, actualizado) => {
+        try {
+            // Validación básica
+            if (!actualizado || Object.keys(actualizado).length === 0) {
+                return { success: false, error: "Datos de actualización requeridos" };
+            }
+            const examenActualizado = await Modeloexamenes.actualizar(parseInt(id), actualizado);
+            if (examenActualizado) {
+                return { success: true, data: examenActualizado };
+            } else {
+                return { success: false, error: "No se pudo actualizar, ID no encontrado" };
+            }
+        } catch (error) {
+            return { success: false, error: error.message };
         }
     }
-};  
+};
 
 module.exports = ControladorExamenes;

@@ -1,66 +1,68 @@
 const Modelopacientes = require("../modelos/paciente_modelos");
 
 const ControladorPaciente = {
-    todos: async (req, res) => {
+    todos: async () => {
         try {
             const pacientes = await Modelopacientes.todos();
-            res.json(pacientes);
+            return { success: true, data: pacientes };
         } catch (error) {
-            res.status(500).json({ error: error.mensaje });
+            return { success: false, error: error.message };
         }
     },
 
-    crear: async (req, res) => {
+    crear: async (nuevoPaciente) => {
         try {
-            const nuevoPaciente = req.body;
+            // Validación básica
+            if (!nuevoPaciente || !nuevoPaciente.id || !nuevoPaciente.nombre || !nuevoPaciente.apellido) {
+                return { success: false, error: "Datos incompletos: se requieren id, nombre y apellido" };
+            }
             const pacienteCreado = await Modelopacientes.crear(nuevoPaciente);
-            
-            res.status(201).json({
-                mensaje: "Paciente creado con éxito",
-                datos: pacienteCreado
-            });
+            return { success: true, data: pacienteCreado };
         } catch (error) {
-            res.status(500).json({ message: "Error al guardar" });
+            return { success: false, error: "Error al guardar" };
         }
     },
 
-    eliminar: async (req, res) => {
+    eliminar: async (id) => {
         try {
-            const { id } = req.params;
-            await Modelopacientes.eliminar(id);
-            res.json({ mensaje: `Paciente eliminado con éxito` });
+            const eliminado = await Modelopacientes.eliminar(parseInt(id));
+            if (eliminado) {
+                return { success: true };
+            } else {
+                return { success: false, error: "No se pudo eliminar, ID no encontrado" };
+            }
         } catch (error) {
-            res.status(500).json({ error: error.mensaje });
+            return { success: false, error: error.message };
         }
     },
 
-    buscarporId: async (req, res) => {
+    buscarporId: async (id) => {
         try {
-            const { id } = req.params;
-            const paciente = await Modelopacientes.buscarporId(id);
-
+            const paciente = await Modelopacientes.buscarporId(parseInt(id));
             if (paciente) {
-                res.json(paciente);
+                return { success: true, data: paciente };
             } else {
-                res.status(404).json({ error: "Paciente no encontrado" });
+                return { success: false, error: "Paciente no encontrado" };
             }
         } catch (error) {
-            res.status(500).json({ error: error.mensaje });
+            return { success: false, error: error.message };
         }
     },
 
-    actualizar: async (req, res) => {
+    actualizar: async (id, actualizado) => {
         try {
-            const { id } = req.params;
-            const actualizado = await Modelopacientes.actualizar(id, req.body);
-
-            if (actualizado) {
-                res.json({ mensaje: "Paciente actualizado", data: actualizado });
+            // Validación básica
+            if (!actualizado || Object.keys(actualizado).length === 0) {
+                return { success: false, error: "Datos de actualización requeridos" };
+            }
+            const pacienteActualizado = await Modelopacientes.actualizar(parseInt(id), actualizado);
+            if (pacienteActualizado) {
+                return { success: true, data: pacienteActualizado };
             } else {
-                res.status(404).json({ error: "No se pudo actualizar, ID no encontrado" });
+                return { success: false, error: "No se pudo actualizar, ID no encontrado" };
             }
         } catch (error) {
-            res.status(500).json({ error: error.mensaje });
+            return { success: false, error: error.message };
         }
     }
 };
