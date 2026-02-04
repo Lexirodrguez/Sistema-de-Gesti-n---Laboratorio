@@ -7,9 +7,13 @@ const ControladorPaciente = {
     },
 
     crear: async (nuevoPaciente) => {
-        if (!nuevoPaciente || !nuevoPaciente.id || !nuevoPaciente.nombre || !nuevoPaciente.apellido) {
+        if (!nuevoPaciente || !nuevoPaciente.id || !nuevoPaciente.nombre || !nuevoPaciente.edad) {
             return null;
         }
+        nuevoPaciente.id = parseInt(nuevoPaciente.id);
+        nuevoPaciente.edad = parseInt(nuevoPaciente.edad);
+        nuevoPaciente.cedula = parseInt(nuevoPaciente.cedula);
+
         const pacienteCreado = await Modelopacientes.crear(nuevoPaciente);
         return pacienteCreado;
     },
@@ -28,6 +32,10 @@ const ControladorPaciente = {
         if (!actualizado || Object.keys(actualizado).length === 0) {
             return null;
         }
+        if(actualizado.id) actualizado.id = parseInt(actualizado.id);
+        if(actualizado.edad) actualizado.edad = parseInt(actualizado.edad);
+        if(actualizado.cedula) actualizado.cedula = parseInt(actualizado.cedula);
+        
         const pacienteActualizado = await Modelopacientes.actualizar(parseInt(id), actualizado);
         return pacienteActualizado;
     }
