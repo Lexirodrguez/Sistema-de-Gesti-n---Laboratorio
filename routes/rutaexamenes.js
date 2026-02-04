@@ -20,7 +20,7 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-router.post("/nuevo", async (req, res) => {
+router.post("/", async (req, res) => {
     const result = await examenesControlador.crear(req.body);
     if (result.success) {
         res.status(201).json({
@@ -32,7 +32,7 @@ router.post("/nuevo", async (req, res) => {
     }
 });
 
-router.put("/:id/editar", async (req, res) => {
+router.put("/:id", async (req, res) => {
     const result = await examenesControlador.actualizar(req.params.id, req.body);
     if (result.success) {
         res.json({ mensaje: "Examen actualizado", datos: result.data });
@@ -41,7 +41,7 @@ router.put("/:id/editar", async (req, res) => {
     }
 });
 
-router.delete("/:id/eliminar", async (req, res) => {
+router.delete("/:id", async (req, res) => {
     const result = await examenesControlador.eliminar(req.params.id);
     if (result.success) {
         res.json({ mensaje: "Examen eliminado con éxito" });
