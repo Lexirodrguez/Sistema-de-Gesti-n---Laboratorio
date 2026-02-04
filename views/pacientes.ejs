@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <title>Pacientes</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
   <body>
-    <h1>Sistema de Gestión de Laboratorio</h1>
+    <h1>Lista de Pacientes</h1>
     <nav>
       <ul>
         <li><a href="/">Inicio</a></li>
@@ -15,6 +15,10 @@
         <li><a href="/agregar">Agregar Paciente</a></li>
       </ul>
     </nav>
-    <p>Bienvenido al sistema de gestión de laboratorio. Selecciona una opción del menú.</p>
+    <ul>
+      <% pacientes.forEach(paciente => { %>
+        <li>ID: <%= paciente.id %> - Nombre: <%= paciente.nombre %> <%= paciente.apellido %></li>
+      <% }); %>
+    </ul>
   </body>
 </html>

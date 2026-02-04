@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Resultados</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <h1>Lista de Resultados</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/pacientes">Pacientes</a></li>
+        <li><a href="/examenes">Exámenes</a></li>
+        <li><a href="/resultados">Resultados</a></li>
+        <li><a href="/agregar">Agregar Paciente</a></li>
+      </ul>
+    </nav>
+    <ul>
+      <% resultados.forEach(resultado => { %>
+        <li>ID: <%= resultado.id %> - Paciente ID: <%= resultado.pacienteId %> - Examen ID: <%= resultado.examenId %> - Valor: <%= resultado.valor %></li>
+      <% }); %>
+    </ul>
+  </body>
+</html>
