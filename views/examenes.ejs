@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Exámenes</title>
-    <link rel="stylesheet" href="/stylesheets/style.css"/>
+    <title>Gestión de Exámenes</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
   <body>
     <h1>Lista de Exámenes</h1>
@@ -11,10 +11,65 @@
         <li><a href="/">Inicio</a></li>
       </ul>
     </nav>
-    <ul>
-      <% examenes.forEach(examen => { %>
-        <li>ID: <%= examen.id %> - Nombre: <%= examen.nombre %> - Descripción: <%= examen.descripcion %></li>
-      <% }); %>
-    </ul>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Descripción</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% examenes.forEach(examen => { %> 
+          <tr>
+            <td><%= examen.id %></td>
+            <td><%= examen.nombre %></td>
+            <td><%= examen.precio %></td>
+            <td><%= examen.descripcion %></td>
+            <td>
+              <form action="/examenes/<%= examen.id %>/eliminar" method="POST" style="display:inline;">
+                <button type="submit" onclick="return confirm('¿Eliminar examen?')">Eliminar</button>
+              </form>
+              
+              <a href="/examenes/<%= examen.id %>/editar">
+                <button type="button">Editar</button>
+              </a>
+            </td>
+          </tr> 
+        <% }); %>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <section>
+      <h2><%= examenEditar ? 'Editar Examen' : 'Agregar Nuevo Examen' %></h2>
+      
+      <form action="<%= examenEditar ? '/examenes/' + examenEditar.id + '/actualizar' : '/examenes/nuevo' %>" method="POST">
+        
+        <label for="id">Id:</label> 
+        <input type="number" id="id" name="id" value="<%= examenEditar ? examenEditar.id : '' %>" <%= examenEditar ? 'readonly' : 'required' %>> 
+        
+        <label for="nombre">Nombre:</label> 
+        <input type="text" id="nombre" name="nombre" value="<%= examenEditar ? examenEditar.nombre : '' %>" required> 
+        
+        <label for="precio">Precio:</label> 
+        <input type="number" id="precio" name="precio" step="0.01" value="<%= examenEditar ? examenEditar.precio : '' %>" required> 
+
+        <label for="descripcion">Descripción:</label> 
+        <input type="text" id="descripcion" name="descripcion" value="<%= examenEditar ? examenEditar.descripcion : '' %>" required>
+
+        <button type="submit">
+          <%= examenEditar ? 'Guardar Cambios' : 'Agregar Examen' %>
+        </button>
+        
+        <% if (examenEditar) { %>
+          <a href="/examenes"><button type="button">Cancelar</button></a>
+        <% } %>
+      </form>
+    </section>
   </body>
 </html>

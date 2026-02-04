@@ -4,46 +4,32 @@ const examenesControlador = require("../controladores/examenesControlador");
 
 router.get("/", async (req, res) => {
     const examenes = await examenesControlador.todos();
-    res.json({ mensaje: "Examenes obtenidos con éxito", datos: examenes });
+    res.render("examenes", { examenes, examenEditar: null }); 
 });
 
-router.get("/:id", async (req, res) => {
-    const examen = await examenesControlador.buscarporId(req.params.id);
-    if (examen) {
-        res.json(examen);
+router.get("/:id/editar", async (req, res) => {
+    const examenes = await examenesControlador.todos(); 
+    const examenEditar = await examenesControlador.buscarporId(req.params.id);
+    if (examenEditar) {
+        res.render("examenes", { examenes, examenEditar }); 
     } else {
-        res.status(404).json({ error: "Examen no encontrado" });
+        res.status(404).send("Examen no encontrado");
     }
 });
 
-router.post("/", async (req, res) => {
-    const examenCreado = await examenesControlador.crear(req.body);
-    if (examenCreado) {
-        res.status(201).json({
-            mensaje: "Examen creado con éxito",
-            datos: examenCreado
-        });
-    } else {
-        res.status(400).json({ error: "Datos inválidos" });
-    }
+router.post("/:id/actualizar", async (req, res) => {
+    await examenesControlador.actualizar(req.params.id, req.body);
+    res.redirect("/examenes"); 
 });
 
-router.put("/:id", async (req, res) => {
-    const examenActualizado = await examenesControlador.actualizar(req.params.id, req.body);
-    if (examenActualizado) {
-        res.json({ mensaje: "Examen actualizado", datos: examenActualizado });
-    } else {
-        res.status(400).json({ error: "Datos inválidos o ID no encontrado" });
-    }
+router.post("/:id/eliminar", async (req, res) => {
+    await examenesControlador.eliminar(req.params.id);
+    res.redirect("/examenes");
 });
 
-router.delete("/:id", async (req, res) => {
-    const eliminado = await examenesControlador.eliminar(req.params.id);
-    if (eliminado) {
-        res.json({ mensaje: "Examen eliminado con éxito" });
-    } else {
-        res.status(404).json({ error: "Examen no encontrado" });
-    }
+router.post("/nuevo", async (req, res) => {
+    await examenesControlador.crear(req.body);
+    res.redirect("/examenes");
 });
 
 module.exports = router;

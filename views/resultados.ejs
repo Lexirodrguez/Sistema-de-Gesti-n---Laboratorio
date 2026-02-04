@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Resultados</title>
+    <title>Gestión de Resultados</title>
     <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
   <body>
@@ -11,10 +11,71 @@
         <li><a href="/">Inicio</a></li>
       </ul>
     </nav>
-    <ul>
-      <% resultados.forEach(resultado => { %>
-        <li>ID: <%= resultado.id %> - Paciente ID: <%= resultado.pacienteId %> - Examen ID: <%= resultado.examenId %> - Valor: <%= resultado.valor %></li>
-      <% }); %>
-    </ul>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>ID Paciente</th>
+          <th>ID Examen</th>
+          <th>Fecha</th>
+          <th>Resultado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% resultados.forEach(resultadoItem => { %> 
+          <tr>
+            <td><%= resultadoItem.id %></td>
+            <td><%= resultadoItem.pacienteId %></td>
+            <td><%= resultadoItem.examenId %></td>
+            <td><%= resultadoItem.fecha %></td>
+            <td><%= resultadoItem.resultado %></td>
+            <td>
+              <form action="/resultados/<%= resultadoItem.id %>/eliminar" method="POST" style="display:inline;">
+                <button type="submit" onclick="return confirm('¿Eliminar resultado?')">Eliminar</button>
+              </form>
+              
+              <a href="/resultados/<%= resultadoItem.id %>/editar">
+                <button type="button">Editar</button>
+              </a>
+            </td>
+          </tr> 
+        <% }); %>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <section>
+      <h2><%= resultadoEditar ? 'Editar Resultado' : 'Registrar Nuevo Resultado' %></h2>
+      
+      <form action="<%= resultadoEditar ? '/resultados/' + resultadoEditar.id + '/actualizar' : '/resultados/nuevo' %>" method="POST">
+        
+        <label for="id">Id Resultado:</label> 
+        <input type="number" id="id" name="id" value="<%= resultadoEditar ? resultadoEditar.id : '' %>" <%= resultadoEditar ? 'readonly' : 'required' %>> 
+        
+        <label for="pacienteId">ID Paciente:</label> 
+        <input type="number" id="pacienteId" name="pacienteId" value="<%= resultadoEditar ? resultadoEditar.pacienteId : '' %>" required> 
+        
+        <label for="examenId">ID Examen:</label> 
+        <input type="number" id="examenId" name="examenId" value="<%= resultadoEditar ? resultadoEditar.examenId : '' %>" required> 
+
+        <label for="fecha">Fecha:</label> 
+        <input type="date" id="fecha" name="fecha" value="<%= resultadoEditar ? resultadoEditar.fecha : '' %>" required>
+
+        <label for="resultado">Descripción del Resultado:</label> 
+        <input type="text" id="resultado" name="resultado" required><%= resultadoEditar ? resultadoEditar.resultado : '' %></textarea>
+        
+        <br>
+        <button type="submit">
+          <%= resultadoEditar ? 'Guardar Cambios' : 'Registrar Resultado' %>
+        </button>
+        
+        <% if (resultadoEditar) { %>
+          <a href="/resultados"><button type="button">Cancelar</button></a>
+        <% } %>
+      </form>
+    </section>
   </body>
 </html>
