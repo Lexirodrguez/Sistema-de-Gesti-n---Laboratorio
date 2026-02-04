@@ -3,50 +3,46 @@ const router = express.Router();
 const resultadosControlador = require("../controladores/resultadosControlador.js");
 
 router.get("/", async (req, res) => {
-    const result = await resultadosControlador.todos();
-    if (result.success) {
-        res.json({ mensaje: "Resultados obtenidos con éxito", datos: result.data });
-    } else {
-        res.status(500).json({ error: result.error });
-    }
+    const resultados = await resultadosControlador.todos();
+    res.json({ mensaje: "Resultados obtenidos con éxito", datos: resultados });
 });
 
 router.get("/:id", async (req, res) => {
-    const result = await resultadosControlador.buscarporId(req.params.id);
-    if (result.success) {
-        res.json(result.data);
+    const resultado = await resultadosControlador.buscarporId(req.params.id);
+    if (resultado) {
+        res.json(resultado);
     } else {
-        res.status(result.error === "Resultado no encontrado" ? 404 : 500).json({ error: result.error });
+        res.status(404).json({ error: "Resultado no encontrado" });
     }
 });
 
 router.post("/nuevo", async (req, res) => {
-    const result = await resultadosControlador.crear(req.body);
-    if (result.success) {
+    const resultadoCreado = await resultadosControlador.crear(req.body);
+    if (resultadoCreado) {
         res.status(201).json({
             mensaje: "Resultado creado con éxito",
-            datos: result.data
+            datos: resultadoCreado
         });
     } else {
-        res.status(400).json({ error: result.error });
+        res.status(400).json({ error: "Datos inválidos" });
     }
 });
 
 router.put("/:id/editar", async (req, res) => {
-    const result = await resultadosControlador.actualizar(req.params.id, req.body);
-    if (result.success) {
-        res.json({ mensaje: "Resultado actualizado", datos: result.data });
+    const resultadoActualizado = await resultadosControlador.actualizar(req.params.id, req.body);
+    if (resultadoActualizado) {
+        res.json({ mensaje: "Resultado actualizado", datos: resultadoActualizado });
     } else {
-        res.status(result.error.includes("no encontrado") ? 404 : 400).json({ error: result.error });
+        res.status(400).json({ error: "Datos inválidos o ID no encontrado" });
     }
 });
 
 router.delete("/:id/eliminar", async (req, res) => {
-    const result = await resultadosControlador.eliminar(req.params.id);
-    if (result.success) {
+    const eliminado = await resultadosControlador.eliminar(req.params.id);
+    if (eliminado) {
         res.json({ mensaje: "Resultado eliminado con éxito" });
     } else {
-        res.status(500).json({ error: result.error });
+        res.status(404).json({ error: "Resultado no encontrado" });
     }
 });
 
