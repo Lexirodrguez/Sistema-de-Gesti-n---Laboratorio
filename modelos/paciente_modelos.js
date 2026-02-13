@@ -1,71 +1,57 @@
-const fs = require("fs/promises");
-const path = require("path");
-const pathJSON = path.join(__dirname, "../configuracion_bd/conexion_bd.php");
+const db = require("../configuracion_bd/bd.js");
 
 class Modelopacientes  {
 
-    async LeerArchivo() {
-        try {
-            const datos = await fs.readFile(pathJSON, "utf-8");
-            return JSON.parse(datos);
-        } catch (error) {
-            return [];
-        }
-    }    
-
-        async guardarArchivo(datos) {
-    try {
-        const contenido = JSON.stringify(datos, null, 2); 
-        await fs.writeFile(pathJSON, contenido, "utf-8"); 
-    } catch (error) {
-        return [];
-    }
-    }
-
     async todos() {
-        return await this.LeerArchivo();
+        try {
+            const [completo] = await db.query("SELECT * FROM pacientes");
+            return [completo];
+        } catch (error) {
+            return[];
+        }
     }
-    
 
     async buscarporId(id) {
-        const pacientes = await this.LeerArchivo();
-        return pacientes.find(p => p.id === parseInt(id));
+     try{
+        const [encontrar] = await db.query("SELECT * FROM pacientes WHERE id_pacientes = ?", [id]);
+        return encontrar.length > 0 ? encontrar[0] : null;
+    } catch (error) {
+        return null;
+        }
     }
 
     async crear(nuevoPaciente) {
-        const pacientes = await this.LeerArchivo();
-        pacientes.push(nuevoPaciente);
-        await this.guardarArchivo(pacientes);
-        return nuevoPaciente;
+        try {
+            const { nombre_pacientes, edad_pacientes, cedula_pacientes, fechaNacimiento_pacientes } = nuevoPaciente;
+            const [nuevo] = await db.query(
+                "INSERT INTO pacientes (nombre_pacientes, edad_pacientes, cedula_pacientes, fechaNacimiento_pacientes) VALUES (?, ?, ?, ?)",
+                [nombre_pacientes, edad_pacientes, cedula_pacientes, fechaNacimiento_pacientes]
+            );
+            return { id_pacientes: nuevo.insertId, ...nuevoPaciente };
+        } catch (error) {
+            return null;
+        }
     }
 
     async actualizar(id, datosActualizados) {
-        try {
-            const pacientes = await this.LeerArchivo();
-            const index = pacientes.findIndex(p => p.id === parseInt(id));
-
-            if (index === -1) return null;
-
-            pacientes[index] = {...pacientes[index], ...datosActualizados };
-            await this.guardarArchivo(pacientes);
-            return pacientes[index];
-            
+        try { 
+            const [nuevo] = await db.query(
+                "UPDATE pacientes SET ? WHERE id_pacientes = ?",
+                [datosActualizados, id]
+            );
+            return nuevo.affectedRows > 0 ? {id_pacientes: id, ...datosActualizados} : null ;
         } catch (error) {
             return null;
         }
 
-        }
+    }
 
     async eliminar(id) {
         try {
-        const pacientes = await this.LeerArchivo();
-        const pacientesRestantes = pacientes.filter(p => p.id !== parseInt(id));
-
-        await this.guardarArchivo(pacientesRestantes);
-        return true;
-
-        }catch (error) {
-            return false;
+            const [encontrar] = await db.query("DELETE FROM pacientes WHERE id_pacientes = ?", [id]);
+            return encontrar.affectedRows > 0;
+        } catch (error) {
+            return null;
         }
     }
 

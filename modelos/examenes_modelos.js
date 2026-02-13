@@ -7,17 +7,15 @@ class Modeloexamenes {
             const [completo] = await db.query("SELECT * FROM examenes");
             return completo;  
         } catch (error) {
-            console.error("Error al obtener examenes", error);
             return []
         }
     }
 
     async buscarporId(id) {
         try {
-            const [filas] = await db.query("SELECT * FROM examenes WHERE id_examenes = ?", [id]);
-            return filas.length > 0 ? filas[0] : null;
+            const [encontrar] = await db.query("SELECT * FROM examenes WHERE id_examenes = ?", [id]);
+            return encontrar.length > 0 ? encontrar[0] : null;
         } catch (error) {
-            console.error("Examen no encontrado", error);
             return null;
         }
     }
@@ -25,38 +23,36 @@ class Modeloexamenes {
     async crear(examenNuevo) {
         try {
             const  {nombre_examenes, precio_examenes, descripcion_examenes } = examenNuevo;
-            const [resultado] = await db.query(
+            const [nuevo] = await db.query(
                 "INSERT INTO examenes (nombre_examenes, precio_examenes, descripcion_examenes) VALUES (?, ?, ?)",
                 [nombre_examenes, precio_examenes, descripcion_examenes]
             );
-            return { id_examenes: resultado.insertId, ...examenNuevo };
+            return { id_examenes: nuevo.insertId, ...examenNuevo };
         } catch (error) {
-            console.error("Error al crear examen", error);
+            return null; 
         }
     }
 
     async actualizar(id, examenActualizado) {
         try {
-            const [resultado] = await db.query(
+            const [nuevo] = await db.query(
                 "UPDATE examenes SET ? WHERE id_examenes = ?",
                 [examenActualizado, id]
             );
-            return resultado.affectedRows > 0 ? { id_examenes: id, ...examenActualizado } : null;
+            return nuevo.affectedRows > 0 ? { id_examenes: id, ...examenActualizado } : null;
             } catch (error) {
-                console.error("Error al actualizar examen", error);
                 return null;
             }
         }
 
         async eliminar(id) {
             try {
-                const [resultado] = await db.query("DELETE FROM examenes WHERE id_examenes = ?", [id]);
-                return resultado.affectedRows > 0;
+                const [encontrar] = await db.query("DELETE FROM examenes WHERE id_examenes = ?", [id]);
+                return encontrar.affectedRows > 0;
             } catch (error) {
-                console.error("Error al eliminar examen", error);
-                return false;
+                return null;
             }
         }
     }
 
-module.exports = new Modeloexamenes;
+module.exports = new Modeloexamenes ();

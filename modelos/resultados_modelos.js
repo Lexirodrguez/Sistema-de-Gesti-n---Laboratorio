@@ -1,69 +1,59 @@
-const fs = require("fs/promises");
-const path = require("path");
-const pathJSON = path.join(__dirname, "../configuracion_bd/conexion_bd.php");
+const bd = require("../configuracion_bd/bd.js");
 
 class Modeloresultados {
 
-    async LeerArchivo() {
-        try {
-            const datos = await fs.readFile(pathJSON, "utf-8");
-            return JSON.parse(datos);
-        } catch (error) {
-            return [];
-        }
-    }
-
-    async guardarArchivo(datos) {
-        try {
-            const comntenido = JSON.stringify(datos, null, 2);
-            await fs.writeFile(pathJSON, comntenido, "utf-8");
-        } catch (error) {
-            return [];
-        }
-   }
-
    async todos () {
-    return await this.LeerArchivo();
+    try {
+        const [completo] = await db.query ("SELECT * FROM resultados");
+        return completo; 
+    } catch (error) {
+        return [];
+    }
    }
 
    async buscarporId(id) {
-    const resultados = await this.LeerArchivo();
-    return resultados.find(r => r.id === parseInt(id));
+    try {
+        const [encontrar] = await db.query("SELECT * FROM resultados WHERE id_resultados = ?", [id]);
+        return encontrar.length > 0 ? encontrar [0] : null;
+    } catch (error) {
+        return null;
+    }
    }
 
    async crear(nuevoResultado) {
-    const resultados = await this.LeerArchivo();
-    resultados.push(nuevoResultado);
-    await this.guardarArchivo(resultados);
-    return nuevoResultado;
-   }
+    try {
+        const { pacienteid_resultados, examen_resultados, fecha_resultados, resultado_resultados } = nuevoResultado;
+        const [nuevo] = await db.query(
+            "INSERT INTO resultados (pacienteid_resultados, examen_resultados, fecha_resultados, resultado_resultados) VALUES (?, ?, ?, ?)",
+            [pacienteid_resultados, examen_resultados, fecha_resultados, resultado_resultados]
+        );
+        return { id_resultados: nuevo.insertId, ...nuevoResultado };
+    } catch (error) {
+        return null; 
+    }
+
+    }
    
    async actualizar(id, resultadosActualizados) {
     try {
-        const resultados = await this.LeerArchivo();
-        const index = resultados.findIndex(r => r.id === parseInt(id));
-
-        if (index === -1) return null;
-
-        resultados[index] = {...resultados[index], ...resultadosActualizados};
-        await this.guardarArchivo(resultados);
-        return resultados[index];
-    }catch (error) {
+       const [nuevo] = await db.query (
+        "UPDATE resultados SET ? WHERE id_resultados =?",
+        [resultadosActualizados, id]
+    );
+    return nuevo.affedtedRows > 0 ? { id_resultados: id, ...resultadosActualizados } : null;
+    } catch (error) {
         return null;
     }
-
    }
 
    async eliminar (id) {
     try {
-        const resultados = await this.LeerArchivo();
-        const resultadosRestantes = resultados.filter(r => r.id !== parseInt(id));
-        await this.guardarArchivo(resultadosRestantes);
-        return true;
-    }catch (error) {
-        return false;
+        const [encontrar] = await db.query("DELETE FROM resultados WHERE id_resultados = ?", [id]);
+        return encontrar.affedtedRows > 0;
+    } catch (error) {
+        return null;
     }
    }
 }
 
-module.exports = new Modeloresultados;
+module.exports = new Modeloresultados ();
