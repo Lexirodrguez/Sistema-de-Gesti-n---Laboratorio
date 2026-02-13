@@ -1,4 +1,4 @@
-const ModeloPacientes = require('../modelos/pacientes_modelos');
+const ModeloPacientes = require('../modelos/paciente_modelos');
 
 const ControladorPacientes = {
     todos: async () => {

@@ -1,13 +1,9 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
 
+/* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render("index", { title: "Sistema de Gestión de Laboratorio"});
+  res.render('index', { title: 'Express' });
 });
-
-const pacienteControlador = require("../controladores/pacienteControlador");
-const examenesControlador = require("../controladores/examenesControlador");
-const resultadosControlador = require("../controladores/resultadosControlador");
-
 
 module.exports = router;
