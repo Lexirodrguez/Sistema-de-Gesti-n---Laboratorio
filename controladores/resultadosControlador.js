@@ -1,32 +1,23 @@
-const ModeloResultados = require("../modelos/resultados_modelos");
+const ModeloResultados = require('../modelos/resultados_modelos');
 
 const ControladorResultados = {
     todos: async () => {
-        const resultados = await ModeloResultados.todos();
-        return resultados;
+        return await ModeloResultados.todosConDetalles();
     },
 
-    crear: async (nuevoResultado) => {
-        if (!nuevoResultado || !nuevoResultado.id || !nuevoResultado.pacienteId || !nuevoResultado.examenId) {
+    crear: async (datos) => {
+        if (!datos || !datos.id_pacientes || !datos.id_examenes || !datos.resultado_examenes) {
             return null;
         }
+        
+        datos.id_pacientes = parseInt(datos.id_pacientes);
+        datos.id_examenes = parseInt(datos.id_examenes);
 
-        nuevoResultado.id = parseInt(nuevoResultado.id);
-        nuevoResultado.pacienteId = parseInt(nuevoResultado.pacienteId);
-        nuevoResultado.examenId = parseInt(nuevoResultado.examenId);
-
-        const resultadoCreado = await ModeloResultados.crear(nuevoResultado);
-        return resultadoCreado;
-    },
-
-    eliminar: async (id) => {
-        const eliminado = await ModeloResultados.eliminar(parseInt(id));
-        return eliminado;
+        return await ModeloResultados.crear(datos);
     },
 
     buscarporId: async (id) => {
-        const resultado = await ModeloResultados.buscarporId(parseInt(id));
-        return resultado;
+        return await ModeloResultados.buscarporId(parseInt(id));
     },
 
     actualizar: async (id, actualizado) => {
@@ -34,12 +25,14 @@ const ControladorResultados = {
             return null;
         }
 
-        if (actualizado.id) actualizado.id = parseInt(actualizado.id);
-        if (actualizado.pacienteId) actualizado.pacienteId = parseInt(actualizado.pacienteId);
-        if (actualizado.examenId) actualizado.examenId = parseInt(actualizado.examenId);
-        
-        const resultadoActualizado = await ModeloResultados.actualizar(parseInt(id), actualizado);
-        return resultadoActualizado;
+        if (actualizado.id_pacientes) actualizado.id_pacientes = parseInt(actualizado.id_pacientes);
+        if (actualizado.id_examenes) actualizado.id_examenes = parseInt(actualizado.id_examenes);
+
+        return await ModeloResultados.actualizar(parseInt(id), actualizado);
+    },
+
+    eliminar: async (id) => {
+        return await ModeloResultados.eliminar(parseInt(id));
     }
 };
 

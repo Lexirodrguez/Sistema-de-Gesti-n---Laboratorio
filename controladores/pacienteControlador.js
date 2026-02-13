@@ -1,44 +1,41 @@
-const Modelopacientes = require("../modelos/paciente_modelos");
+const ModeloPacientes = require('../modelos/pacientes_modelos');
 
-const ControladorPaciente = {
+const ControladorPacientes = {
     todos: async () => {
-        const pacientes = await Modelopacientes.todos();
-        return pacientes;
+        return await ModeloPacientes.todos();
     },
 
     crear: async (nuevoPaciente) => {
-        if (!nuevoPaciente || !nuevoPaciente.id || !nuevoPaciente.nombre || !nuevoPaciente.edad) {
+        if (!nuevoPaciente || !nuevoPaciente.nombre_pacientes || !nuevoPaciente.apellido_pacientes) {
             return null;
         }
-        nuevoPaciente.id = parseInt(nuevoPaciente.id);
-        nuevoPaciente.edad = parseInt(nuevoPaciente.edad);
-        nuevoPaciente.cedula = parseInt(nuevoPaciente.cedula);
+        
+        if (nuevoPaciente.edad_pacientes) {
+            nuevoPaciente.edad_pacientes = parseInt(nuevoPaciente.edad_pacientes);
+        }
 
-        const pacienteCreado = await Modelopacientes.crear(nuevoPaciente);
-        return pacienteCreado;
-    },
-
-    eliminar: async (id) => {
-        const eliminado = await Modelopacientes.eliminar(parseInt(id));
-        return eliminado;
+        return await ModeloPacientes.crear(nuevoPaciente);
     },
 
     buscarporId: async (id) => {
-        const paciente = await Modelopacientes.buscarporId(parseInt(id));
-        return paciente;
+        return await ModeloPacientes.buscarporId(parseInt(id));
     },
 
     actualizar: async (id, actualizado) => {
         if (!actualizado || Object.keys(actualizado).length === 0) {
             return null;
         }
-        if(actualizado.id) actualizado.id = parseInt(actualizado.id);
-        if(actualizado.edad) actualizado.edad = parseInt(actualizado.edad);
-        if(actualizado.cedula) actualizado.cedula = parseInt(actualizado.cedula);
+
+        if (actualizado.edad_pacientes) {
+            actualizado.edad_pacientes = parseInt(actualizado.edad_pacientes);
+        }
         
-        const pacienteActualizado = await Modelopacientes.actualizar(parseInt(id), actualizado);
-        return pacienteActualizado;
+        return await ModeloPacientes.actualizar(parseInt(id), actualizado);
+    },
+
+    eliminar: async (id) => {
+        return await ModeloPacientes.eliminar(parseInt(id));
     }
 };
 
-module.exports = ControladorPaciente;
+module.exports = ControladorPacientes;
