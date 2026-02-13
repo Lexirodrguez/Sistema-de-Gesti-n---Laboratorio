@@ -1,67 +1,59 @@
-const fs = require("fs/promises");
-const path = require("path");
-const pathJSON = path.join(__dirname, "../configuracion_bd/conexion_bd.php");
+const db = require("../configuracion_bd/bd.js");
 
 class Modeloexamenes {
-
-    async LeerArchivo() {
-        try {
-            const datos = await fs.readFile(pathJSON, "utf-8");
-            return JSON.parse(datos);
-        } catch (error) {
-            return [];
-        }
-    }  
-    
-    async guardarArchivo(datos) {
-        try {
-            const contenido = JSON.stringify(datos, null, 2);
-            await fs.writeFile(pathJSON, contenido, "utf-8");
-        } catch (error) {
-            return [];
-        }
-    }
     
     async todos () {
-        return await this.LeerArchivo();
+        try {
+            const [completo] = await db.query("SELECT * FROM examenes");
+            return completo;  
+        } catch (error) {
+            console.error("Error al obtener examenes", error);
+            return []
+        }
     }
 
     async buscarporId(id) {
-        const examenes = await this.LeerArchivo();
-        return examenes.find(e => e.id === parseInt(id));
+        try {
+            const [filas] = await db.query("SELECT * FROM examenes WHERE id_examenes = ?", [id]);
+            return filas.length > 0 ? filas[0] : null;
+        } catch (error) {
+            console.error("Examen no encontrado", error);
+            return null;
+        }
     }
 
     async crear(examenNuevo) {
-        const examenes = await this.LeerArchivo();
-        examenes.push(examenNuevo);
-        await this.guardarArchivo(examenes);
-        return examenNuevo;
+        try {
+            const  {nombre_examenes, precio_examenes, descripcion_examenes } = examenNuevo;
+            const [resultado] = await db.query(
+                "INSERT INTO examenes (nombre_examenes, precio_examenes, descripcion_examenes) VALUES (?, ?, ?)",
+                [nombre_examenes, precio_examenes, descripcion_examenes]
+            );
+            return { id_examenes: resultado.insertId, ...examenNuevo };
+        } catch (error) {
+            console.error("Error al crear examen", error);
+        }
     }
 
     async actualizar(id, examenActualizado) {
         try {
-            const examenes = await this.LeerArchivo();
-            const index = examenes.findIndex(e => e.id === parseInt(id));
-
-            if (index === -1) return null;
-
-            examenes[index] = {...examenes[index], ...examenActualizado};
-            await this.guardarArchivo(examenes);
-            return examenes[index];
-
+            const [resultado] = await db.query(
+                "UPDATE examenes SET ? WHERE id_examenes = ?",
+                [examenActualizado, id]
+            );
+            return resultado.affectedRows > 0 ? { id_examenes: id, ...examenActualizado } : null;
             } catch (error) {
+                console.error("Error al actualizar examen", error);
                 return null;
             }
         }
 
         async eliminar(id) {
             try {
-                const examenes = await this.LeerArchivo();
-                const examenesRestantes = examenes.filter(e => e.id !== parseInt(id));
-
-                await this.guardarArchivo(examenesRestantes);
-                return true;
+                const [resultado] = await db.query("DELETE FROM examenes WHERE id_examenes = ?", [id]);
+                return resultado.affectedRows > 0;
             } catch (error) {
+                console.error("Error al eliminar examen", error);
                 return false;
             }
         }

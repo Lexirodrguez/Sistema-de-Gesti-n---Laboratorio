@@ -7,11 +7,10 @@ const ControladorExamenes = {
     },
 
     crear: async (nuevoExamen) => {
-        if (!nuevoExamen || !nuevoExamen.id || !nuevoExamen.nombre || !nuevoExamen.precio) {
+        if (!nuevoExamen || !nuevoExamen.nombre_examenes || !nuevoExamen.precio_examenes) {
             return null;
         }
-        nuevoExamen.id = parseInt(nuevoExamen.id);
-        nuevoExamen.precio = parseInt(nuevoExamen.precio);
+        nuevoExamen.precio_examenes = parseInt(nuevoExamen.precio_examenes);
 
         const examenCreado = await Modeloexamenes.crear(nuevoExamen);
         return examenCreado;
@@ -31,8 +30,10 @@ const ControladorExamenes = {
         if (!actualizado || Object.keys(actualizado).length === 0) {
             return null;
         }
-        if (actualizado.id) actualizado.id = parseInt(actualizado.id);
-        if (actualizado.precio) actualizado.precio = parseInt(actualizado.precio);
+
+        if (actualizado.precio_examenes) {
+            actualizado.precio_examenes = parseInt(actualizado.precio_examenes);
+        }
         
         const examenActualizado = await Modeloexamenes.actualizar(parseInt(id), actualizado);
         return examenActualizado;
