@@ -1,6 +1,6 @@
 const fs = require("fs/promises");
 const path = require("path");
-const pathJSON = path.join(__dirname, "../datos/pacientes.json");
+const pathJSON = path.join(__dirname, "../configuracion_bd/conexion_bd.php");
 
 class Modelopacientes  {
 
