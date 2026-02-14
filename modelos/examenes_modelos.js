@@ -22,12 +22,9 @@ class Modeloexamenes {
 
     crear(examenNuevo) {
         return new Promise((resolve, reject) => {
-            const { nombre_examenes, precio_examenes, descripcion_examenes } = examenNuevo;
-            const sql = "INSERT INTO examenes (nombre_examenes, precio_examenes, descripcion_examenes) VALUES (?, ?, ?)";
-
-            db.query(sql, [nombre_examenes, precio_examenes, descripcion_examenes], (error, resultado) => {
+            db.query("INSERT INTO examenes SET ?", examenNuevo, (error, resultado) => {
                 if (error) return reject(error);
-                resolve({id_examenes: resultado.insertId, ...datos});
+                resolve(resultado);
             });
         });
     }
@@ -49,6 +46,6 @@ class Modeloexamenes {
                });
            });
         }
-    }
+}
 
 module.exports = new Modeloexamenes ();

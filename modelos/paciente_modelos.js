@@ -2,59 +2,50 @@ const db = require("../configuracion_bd/bd.js");
 
 class Modelopacientes  {
 
-    async todos() {
-        try {
-            const [completo] = await db.query("SELECT * FROM pacientes");
-            return [completo];
-        } catch (error) {
-            return[];
-        }
+    todos() {
+        return new Promise((resolve, reject) => {
+            db.query("SELECT * FROM pacientes", (error, resultado) => {
+                if (error) return reject(error);
+                resolve(resultado);
+            });
+        });
     }
 
-    async buscarporId(id) {
-     try{
-        const [encontrar] = await db.query("SELECT * FROM pacientes WHERE id_pacientes = ?", [id]);
-        return encontrar.length > 0 ? encontrar[0] : null;
-    } catch (error) {
-        return null;
-        }
+    buscarporId(id) {
+        return new Promise((resolve, reject) => {
+            db.query("SELECT * FROM pacientes WHERE id_pacientes = ?", [id], (error, resultado) => {
+                if (error) return reject(error);
+                resolve(resultado[0] || null);
+            });
+        });
     }
 
-    async crear(nuevoPaciente) {
-        try {
-            const { nombre_pacientes, edad_pacientes, cedula_pacientes, fechaNacimiento_pacientes } = nuevoPaciente;
-            const [nuevo] = await db.query(
-                "INSERT INTO pacientes (nombre_pacientes, edad_pacientes, cedula_pacientes, fechaNacimiento_pacientes) VALUES (?, ?, ?, ?)",
-                [nombre_pacientes, edad_pacientes, cedula_pacientes, fechaNacimiento_pacientes]
-            );
-            return { id_pacientes: nuevo.insertId, ...nuevoPaciente };
-        } catch (error) {
-            return null;
-        }
+    crear(nuevoPaciente) {
+        return new Promise((resolve, reject) => {
+            db.query("INSERT INTO pacientes SET ?", nuevoPaciente, (error, resultado) => {
+                if (error) return reject(error);
+                resolve(resultado);
+            });
+        });
     }
 
-    async actualizar(id, datosActualizados) {
-        try { 
-            const [nuevo] = await db.query(
-                "UPDATE pacientes SET ? WHERE id_pacientes = ?",
-                [datosActualizados, id]
-            );
-            return nuevo.affectedRows > 0 ? {id_pacientes: id, ...datosActualizados} : null ;
-        } catch (error) {
-            return null;
-        }
-
+    actualizar(id, datosActualizados) {
+        return new Promise((resolve, reject) => {
+            db.query("UPDATE pacientes SET ? WHERE id_pacientes = ?", [datosActualizados, id], (error, resultado) => {
+                if (error) return reject(error);
+                resolve(resultado.affectedRows > 0 ? { id_pacientes: id, ...datosActualizados } : null);
+            });
+        });
     }
 
-    async eliminar(id) {
-        try {
-            const [encontrar] = await db.query("DELETE FROM pacientes WHERE id_pacientes = ?", [id]);
-            return encontrar.affectedRows > 0;
-        } catch (error) {
-            return null;
-        }
-    }
-
+    eliminar(id) {
+        return new Promise((resolve, reject) => {
+            db.query("DELETE FROM pacientes WHERE id_pacientes = ?", [id], (error, resultado) => {
+                if (error) return reject(error);
+                resolve(resultado.affectedRows > 0);
+            });
+        });
+    }    
 }
 
 module.exports = new Modelopacientes();
