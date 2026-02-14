@@ -2,18 +2,27 @@ const ModeloResultados = require('../modelos/resultados_modelos');
 
 const ControladorResultados = {
     todos: async () => {
-        return await ModeloResultados.todosConDetalles();
+        return await ModeloResultados.todos();
     },
 
     crear: async (datos) => {
-        if (!datos || !datos.id_pacientes || !datos.id_examenes || !datos.resultado_examenes) {
-            return null;
-        }
-        
-        datos.id_pacientes = parseInt(datos.id_pacientes);
-        datos.id_examenes = parseInt(datos.id_examenes);
+        if (!datos) return null;
 
-        return await ModeloResultados.crear(datos);
+        const pacienteId = datos.pacienteId ?? datos.pacienteid_resultados ?? datos.id_pacientes;
+        const examenId = datos.examenId ?? datos.examen_resultados ?? datos.id_examenes;
+        const fecha = datos.fecha ?? datos.fecha_resultados ?? null;
+        const resultado = datos.resultado ?? datos.resultado_resultados ?? datos.resultado_examenes;
+
+        if (!pacienteId || !examenId || !resultado) return null;
+
+        const payload = {
+            pacienteId: parseInt(pacienteId),
+            examenId: parseInt(examenId),
+            fecha,
+            resultado
+        };
+
+        return await ModeloResultados.crear(payload);
     },
 
     buscarporId: async (id) => {
@@ -25,10 +34,13 @@ const ControladorResultados = {
             return null;
         }
 
-        if (actualizado.id_pacientes) actualizado.id_pacientes = parseInt(actualizado.id_pacientes);
-        if (actualizado.id_examenes) actualizado.id_examenes = parseInt(actualizado.id_examenes);
+        const payload = {};
+        if (actualizado.pacienteId) payload.pacienteId = parseInt(actualizado.pacienteId);
+        if (actualizado.examenId) payload.examenId = parseInt(actualizado.examenId);
+        if (actualizado.fecha) payload.fecha = actualizado.fecha;
+        if (actualizado.resultado) payload.resultado = actualizado.resultado;
 
-        return await ModeloResultados.actualizar(parseInt(id), actualizado);
+        return await ModeloResultados.actualizar(parseInt(id), payload);
     },
 
     eliminar: async (id) => {

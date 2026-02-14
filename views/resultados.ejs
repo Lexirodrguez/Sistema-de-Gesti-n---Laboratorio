@@ -65,7 +65,8 @@
         <input type="date" id="fecha" name="fecha" value="<%= resultadoEditar ? resultadoEditar.fecha : '' %>" required>
 
         <label for="resultado">Descripción del Resultado:</label> 
-        <input type="text" id="resultado" name="resultado" required><%= resultadoEditar ? resultadoEditar.resultado : '' %></textarea>
+        <!-- CORREGIDO: Cambié de textarea a input y cerré correctamente la etiqueta -->
+        <input type="text" id="resultado" name="resultado" value="<%= resultadoEditar ? resultadoEditar.resultado : '' %>" required>
         
         <br>
         <button type="submit">
