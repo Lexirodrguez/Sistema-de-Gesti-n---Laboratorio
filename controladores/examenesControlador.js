@@ -7,12 +7,16 @@ const ControladorExamenes = {
     },
 
     crear: async (nuevoExamen) => {
-        if (!nuevoExamen || !nuevoExamen.nombre_examenes || !nuevoExamen.precio_examenes) {
-            return null;
-        }
-        nuevoExamen.precio_examenes = parseInt(nuevoExamen.precio_examenes);
+        if (!nuevoExamen) return null;
 
-        const examenCreado = await Modeloexamenes.crear(nuevoExamen);
+        const nombre = nuevoExamen.nombre ?? nuevoExamen.nombre_examenes;
+        const precio = nuevoExamen.precio ?? nuevoExamen.precio_examenes;
+        const descripcion = nuevoExamen.descripcion ?? nuevoExamen.descripcion_examenes ?? null;
+
+        if (!nombre || precio == null) return null;
+
+        const payload = { nombre, precio: parseFloat(precio), descripcion };
+        const examenCreado = await Modeloexamenes.crear(payload);
         return examenCreado;
     },
 
@@ -31,11 +35,12 @@ const ControladorExamenes = {
             return null;
         }
 
-        if (actualizado.precio_examenes) {
-            actualizado.precio_examenes = parseInt(actualizado.precio_examenes);
-        }
-        
-        const examenActualizado = await Modeloexamenes.actualizar(parseInt(id), actualizado);
+        const payload = {};
+        if (actualizado.nombre) payload.nombre = actualizado.nombre;
+        if (actualizado.precio) payload.precio = parseFloat(actualizado.precio);
+        if (actualizado.descripcion) payload.descripcion = actualizado.descripcion;
+
+        const examenActualizado = await Modeloexamenes.actualizar(parseInt(id), payload);
         return examenActualizado;
     }
 };

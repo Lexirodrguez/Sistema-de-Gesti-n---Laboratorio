@@ -6,15 +6,16 @@ const ControladorPacientes = {
     },
 
     crear: async (nuevoPaciente) => {
-        if (!nuevoPaciente || !nuevoPaciente.nombre_pacientes || !nuevoPaciente.apellido_pacientes) {
-            return null;
-        }
-        
-        if (nuevoPaciente.edad_pacientes) {
-            nuevoPaciente.edad_pacientes = parseInt(nuevoPaciente.edad_pacientes);
-        }
+        if (!nuevoPaciente) return null;
 
-        return await ModeloPacientes.crear(nuevoPaciente);
+        const nombre = nuevoPaciente.nombre ?? nuevoPaciente.nombre_pacientes;
+        const edad = nuevoPaciente.edad ?? nuevoPaciente.edad_pacientes ?? null;
+        const cedula = nuevoPaciente.cedula ?? nuevoPaciente.cedula_pacientes ?? null;
+        const fechaNacimiento = nuevoPaciente.fechaNacimiento ?? nuevoPaciente.fechaNacimiento_pacientes ?? null;
+
+        if (!nombre) return null;
+        const payload = { nombre, edad: edad ? parseInt(edad) : null, cedula, fechaNacimiento };
+        return await ModeloPacientes.crear(payload);
     },
 
     buscarporId: async (id) => {
@@ -26,11 +27,13 @@ const ControladorPacientes = {
             return null;
         }
 
-        if (actualizado.edad_pacientes) {
-            actualizado.edad_pacientes = parseInt(actualizado.edad_pacientes);
-        }
+        const payload = {};
+        if (actualizado.nombre) payload.nombre = actualizado.nombre;
+        if (actualizado.edad) payload.edad = parseInt(actualizado.edad);
+        if (actualizado.cedula) payload.cedula = actualizado.cedula;
+        if (actualizado.fechaNacimiento) payload.fechaNacimiento = actualizado.fechaNacimiento;
         
-        return await ModeloPacientes.actualizar(parseInt(id), actualizado);
+        return await ModeloPacientes.actualizar(parseInt(id), payload);
     },
 
     eliminar: async (id) => {
