@@ -4,17 +4,34 @@ class Modelopacientes  {
 
     async todos() {
         try {
-            const [completo] = await db.query("SELECT * FROM pacientes");
-            return [completo];
+            const [rows] = await db.query(
+                `SELECT
+                    id_pacientes AS id,
+                    nombre_pacientes AS nombre,
+                    edad_pacientes AS edad,
+                    cedula_pacientes AS cedula,
+                    fechaNacimiento_pacientes AS fechaNacimiento
+                FROM pacientes`
+            );
+            return rows;
         } catch (error) {
-            return[];
+            return [];
         }
     }
 
     async buscarporId(id) {
      try{
-        const [encontrar] = await db.query("SELECT * FROM pacientes WHERE id_pacientes = ?", [id]);
-        return encontrar.length > 0 ? encontrar[0] : null;
+        const [rows] = await db.query(
+            `SELECT
+                id_pacientes AS id,
+                nombre_pacientes AS nombre,
+                edad_pacientes AS edad,
+                cedula_pacientes AS cedula,
+                fechaNacimiento_pacientes AS fechaNacimiento
+            FROM pacientes WHERE id_pacientes = ?`,
+            [id]
+        );
+        return rows.length > 0 ? rows[0] : null;
     } catch (error) {
         return null;
         }
@@ -22,12 +39,17 @@ class Modelopacientes  {
 
     async crear(nuevoPaciente) {
         try {
-            const { nombre_pacientes, edad_pacientes, cedula_pacientes, fechaNacimiento_pacientes } = nuevoPaciente;
+            const nombre = nuevoPaciente.nombre ?? nuevoPaciente.nombre_pacientes;
+            const edad = nuevoPaciente.edad ?? nuevoPaciente.edad_pacientes ?? null;
+            const cedula = nuevoPaciente.cedula ?? nuevoPaciente.cedula_pacientes ?? null;
+            const fechaNacimiento = nuevoPaciente.fechaNacimiento ?? nuevoPaciente.fechaNacimiento_pacientes ?? null;
+
             const [nuevo] = await db.query(
                 "INSERT INTO pacientes (nombre_pacientes, edad_pacientes, cedula_pacientes, fechaNacimiento_pacientes) VALUES (?, ?, ?, ?)",
-                [nombre_pacientes, edad_pacientes, cedula_pacientes, fechaNacimiento_pacientes]
+                [nombre, edad, cedula, fechaNacimiento]
             );
-            return { id_pacientes: nuevo.insertId, ...nuevoPaciente };
+            const id = nuevo.insertId;
+            return { id, nombre, edad, cedula, fechaNacimiento };
         } catch (error) {
             return null;
         }
@@ -35,11 +57,24 @@ class Modelopacientes  {
 
     async actualizar(id, datosActualizados) {
         try { 
-            const [nuevo] = await db.query(
+            const updateObj = {};
+            if (datosActualizados.nombre) updateObj.nombre_pacientes = datosActualizados.nombre;
+            if (datosActualizados.edad) updateObj.edad_pacientes = datosActualizados.edad;
+            if (datosActualizados.cedula) updateObj.cedula_pacientes = datosActualizados.cedula;
+            if (datosActualizados.fechaNacimiento) updateObj.fechaNacimiento_pacientes = datosActualizados.fechaNacimiento;
+
+            if (Object.keys(updateObj).length === 0) {
+                if (datosActualizados.nombre_pacientes) updateObj.nombre_pacientes = datosActualizados.nombre_pacientes;
+                if (datosActualizados.edad_pacientes) updateObj.edad_pacientes = datosActualizados.edad_pacientes;
+                if (datosActualizados.cedula_pacientes) updateObj.cedula_pacientes = datosActualizados.cedula_pacientes;
+                if (datosActualizados.fechaNacimiento_pacientes) updateObj.fechaNacimiento_pacientes = datosActualizados.fechaNacimiento_pacientes;
+            }
+
+            const [res] = await db.query(
                 "UPDATE pacientes SET ? WHERE id_pacientes = ?",
-                [datosActualizados, id]
+                [updateObj, id]
             );
-            return nuevo.affectedRows > 0 ? {id_pacientes: id, ...datosActualizados} : null ;
+            return res.affectedRows > 0 ? { id, ...datosActualizados } : null ;
         } catch (error) {
             return null;
         }
@@ -48,8 +83,8 @@ class Modelopacientes  {
 
     async eliminar(id) {
         try {
-            const [encontrar] = await db.query("DELETE FROM pacientes WHERE id_pacientes = ?", [id]);
-            return encontrar.affectedRows > 0;
+            const [res] = await db.query("DELETE FROM pacientes WHERE id_pacientes = ?", [id]);
+            return res.affectedRows > 0;
         } catch (error) {
             return null;
         }

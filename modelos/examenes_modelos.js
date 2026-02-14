@@ -1,20 +1,35 @@
 const db = require("../configuracion_bd/bd.js");
 
 class Modeloexamenes {
-    
-    async todos () {
+
+    async todos() {
         try {
-            const [completo] = await db.query("SELECT * FROM examenes");
-            return completo;  
+            const [rows] = await db.query(
+                `SELECT
+                    id_examenes AS id,
+                    nombre_examenes AS nombre,
+                    precio_examenes AS precio,
+                    descripcion_examenes AS descripcion
+                FROM examenes`
+            );
+            return rows;
         } catch (error) {
-            return []
+            return [];
         }
     }
 
     async buscarporId(id) {
         try {
-            const [encontrar] = await db.query("SELECT * FROM examenes WHERE id_examenes = ?", [id]);
-            return encontrar.length > 0 ? encontrar[0] : null;
+            const [rows] = await db.query(
+                `SELECT
+                    id_examenes AS id,
+                    nombre_examenes AS nombre,
+                    precio_examenes AS precio,
+                    descripcion_examenes AS descripcion
+                FROM examenes WHERE id_examenes = ?`,
+                [id]
+            );
+            return rows.length > 0 ? rows[0] : null;
         } catch (error) {
             return null;
         }
@@ -22,37 +37,52 @@ class Modeloexamenes {
 
     async crear(examenNuevo) {
         try {
-            const  {nombre_examenes, precio_examenes, descripcion_examenes } = examenNuevo;
+            const nombre = examenNuevo.nombre ?? examenNuevo.nombre_examenes;
+            const precio = examenNuevo.precio ?? examenNuevo.precio_examenes;
+            const descripcion = examenNuevo.descripcion ?? examenNuevo.descripcion_examenes ?? null;
+
             const [nuevo] = await db.query(
                 "INSERT INTO examenes (nombre_examenes, precio_examenes, descripcion_examenes) VALUES (?, ?, ?)",
-                [nombre_examenes, precio_examenes, descripcion_examenes]
+                [nombre, precio, descripcion]
             );
-            return { id_examenes: nuevo.insertId, ...examenNuevo };
+            const id = nuevo.insertId;
+            return { id, nombre, precio, descripcion };
         } catch (error) {
-            return null; 
+            return null;
         }
     }
 
     async actualizar(id, examenActualizado) {
         try {
-            const [nuevo] = await db.query(
-                "UPDATE examenes SET ? WHERE id_examenes = ?",
-                [examenActualizado, id]
-            );
-            return nuevo.affectedRows > 0 ? { id_examenes: id, ...examenActualizado } : null;
-            } catch (error) {
-                return null;
-            }
-        }
+            const updateObj = {};
+            if (examenActualizado.nombre) updateObj.nombre_examenes = examenActualizado.nombre;
+            if (examenActualizado.precio) updateObj.precio_examenes = examenActualizado.precio;
+            if (examenActualizado.descripcion) updateObj.descripcion_examenes = examenActualizado.descripcion;
 
-        async eliminar(id) {
-            try {
-                const [encontrar] = await db.query("DELETE FROM examenes WHERE id_examenes = ?", [id]);
-                return encontrar.affectedRows > 0;
-            } catch (error) {
-                return null;
+            if (Object.keys(updateObj).length === 0) {
+                if (examenActualizado.nombre_examenes) updateObj.nombre_examenes = examenActualizado.nombre_examenes;
+                if (examenActualizado.precio_examenes) updateObj.precio_examenes = examenActualizado.precio_examenes;
+                if (examenActualizado.descripcion_examenes) updateObj.descripcion_examenes = examenActualizado.descripcion_examenes;
             }
+
+            const [res] = await db.query(
+                "UPDATE examenes SET ? WHERE id_examenes = ?",
+                [updateObj, id]
+            );
+            return res.affectedRows > 0 ? { id, ...examenActualizado } : null;
+        } catch (error) {
+            return null;
         }
     }
 
-module.exports = new Modeloexamenes ();
+    async eliminar(id) {
+        try {
+            const [res] = await db.query("DELETE FROM examenes WHERE id_examenes = ?", [id]);
+            return res.affectedRows > 0;
+        } catch (error) {
+            return null;
+        }
+    }
+}
+
+module.exports = new Modeloexamenes();
