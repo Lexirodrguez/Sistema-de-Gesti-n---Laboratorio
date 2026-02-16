@@ -9,13 +9,12 @@ const ControladorExamenes = {
     crear: async (nuevoExamen) => {
         if (!nuevoExamen) return null;
 
-        const nombre = nuevoExamen.nombre ?? nuevoExamen.nombre_examenes;
-        const precio = nuevoExamen.precio ?? nuevoExamen.precio_examenes;
-        const descripcion = nuevoExamen.descripcion ?? nuevoExamen.descripcion_examenes ?? null;
+        const payload = { 
+            nombre_examenes: nuevoExamen.nombre, 
+            precio_examenes: parseFloat(nuevoExamen.precio), 
+            descripcion_examenes: nuevoExamen.descripcion 
+        };
 
-        if (!nombre || precio == null) return null;
-
-        const payload = { nombre, precio: parseFloat(precio), descripcion };
         const examenCreado = await Modeloexamenes.crear(payload);
         return examenCreado;
     },
@@ -30,15 +29,15 @@ const ControladorExamenes = {
         return examen;
     },
 
-    actualizar: async (id, actualizado) => {
-        if (!actualizado || Object.keys(actualizado).length === 0) {
-            return null;
-        }
-
-        const payload = {};
-        if (actualizado.nombre) payload.nombre = actualizado.nombre;
-        if (actualizado.precio) payload.precio = parseFloat(actualizado.precio);
-        if (actualizado.descripcion) payload.descripcion = actualizado.descripcion;
+    actualizar: async (id, nuevoExamen) => {
+    if (!nuevoExamen || Object.keys(nuevoExamen).length === 0) {
+        return null;
+    }
+        const payload = {
+        nombre_examenes: nuevoExamen.nombre, 
+        precio_examenes: parseFloat(nuevoExamen.precio), 
+        descripcion_examenes: nuevoExamen.descripcion
+        };
 
         const examenActualizado = await Modeloexamenes.actualizar(parseInt(id), payload);
         return examenActualizado;
