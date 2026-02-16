@@ -11,7 +11,7 @@ const ControladorExamenes = {
 
         const payload = { 
             nombre_examenes: nuevoExamen.nombre, 
-            precio_examenes: parseFloat(nuevoExamen.precio), 
+            precio_examenes: nuevoExamen.precio, 
             descripcion_examenes: nuevoExamen.descripcion 
         };
 

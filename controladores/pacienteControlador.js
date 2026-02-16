@@ -2,24 +2,32 @@ const ModeloPacientes = require('../modelos/paciente_modelos');
 
 const ControladorPacientes = {
     todos: async () => {
-        return await ModeloPacientes.todos();
+        const pacientes = await ModeloPacientes.todos();
+        return pacientes;
     },
 
     crear: async (nuevoPaciente) => {
         if (!nuevoPaciente) return null;
 
-        const nombre = nuevoPaciente.nombre ?? nuevoPaciente.nombre_pacientes;
-        const edad = nuevoPaciente.edad ?? nuevoPaciente.edad_pacientes ?? null;
-        const cedula = nuevoPaciente.cedula ?? nuevoPaciente.cedula_pacientes ?? null;
-        const fechaNacimiento = nuevoPaciente.fechaNacimiento ?? nuevoPaciente.fechaNacimiento_pacientes ?? null;
+        const payload = { 
+            nombre_pacientes: nuevoPaciente.nombre, 
+            edad_pacientes: nuevoPaciente.edad, 
+            cedula_pacientes: nuevoPaciente.cedula,
+            fechaNacimiento_pacientes: nuevoPaciente.fechaNacimiento 
+        };
 
-        if (!nombre) return null;
-        const payload = { nombre, edad: edad ? parseInt(edad) : null, cedula, fechaNacimiento };
-        return await ModeloPacientes.crear(payload);
+        const pacienteCreado = await ModeloPacientes.crear(payload);
+        return pacienteCreado;
+    },
+
+    eliminar: async (id) => {
+        const eliminado = await ModeloPacientes.eliminar(parseInt(id));
+        return eliminado;
     },
 
     buscarporId: async (id) => {
-        return await ModeloPacientes.buscarporId(parseInt(id));
+        const paciente = await ModeloPacientes.buscarporId(parseInt(id));
+        return paciente;
     },
 
     actualizar: async (id, actualizado) => {
@@ -27,17 +35,15 @@ const ControladorPacientes = {
             return null;
         }
 
-        const payload = {};
-        if (actualizado.nombre) payload.nombre = actualizado.nombre;
-        if (actualizado.edad) payload.edad = parseInt(actualizado.edad);
-        if (actualizado.cedula) payload.cedula = actualizado.cedula;
-        if (actualizado.fechaNacimiento) payload.fechaNacimiento = actualizado.fechaNacimiento;
-        
-        return await ModeloPacientes.actualizar(parseInt(id), payload);
-    },
+        const payload = {
+            nombre_pacientes: actualizado.nombre, 
+            edad_pacientes: actualizado.edad ? parseInt(actualizado.edad) : null, 
+            cedula_pacientes: actualizado.cedula,
+            fechaNacimiento_pacientes: actualizado.fechaNacimiento
+        };
 
-    eliminar: async (id) => {
-        return await ModeloPacientes.eliminar(parseInt(id));
+        const pacienteActualizado = await ModeloPacientes.actualizar(parseInt(id), payload);
+        return pacienteActualizado;
     }
 };
 
