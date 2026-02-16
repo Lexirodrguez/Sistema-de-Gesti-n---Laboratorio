@@ -1,6 +1,6 @@
 const ModeloResultados = require('../modelos/resultados_modelos');
 
-const ControladorResultados = {
+const resultadosControlador = {
     todos: async () => {
         const resultados = await ModeloResultados.todos();
         return resultados; 
@@ -47,4 +47,4 @@ const ControladorResultados = {
     }
 };
 
-module.exports = ControladorResultados;
+module.exports = resultadosControlador;

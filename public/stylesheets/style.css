@@ -6,7 +6,7 @@ body {
     line-height: 1.6;
 }
 
-h1, h2, nav {
+h1, h2 {
     text-align: center;
     color: #1a73e8;
 }
@@ -37,4 +37,19 @@ section {
     margin: auto;
     border-radius: 8px;
     border: 1px solid #ddd;
+}
+
+nav ul { 
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  gap: 15px;
+  padding: 0;
+}
+
+nav ul li a {
+  color: white;
+  background-color: #1a73e8;
+  padding: 10px 20px;
+  border-radius: 5px;
 }

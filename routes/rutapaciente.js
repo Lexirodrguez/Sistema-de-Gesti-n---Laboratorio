@@ -7,6 +7,13 @@ router.get("/", async (req, res) => {
     res.render("pacientes", { pacientes, pacienteEditar: null }); 
 });
 
+router.get("/:id", async (req, res) => {
+    const resultado = await pacienteControlador.buscarporId(req.params.id);
+    const pacientes = resultado ? [resultado] : []; 
+
+    res.render("pacientes", {pacientes, pacienteEditar: null });
+});
+
 router.get("/:id/editar", async (req, res) => {
     const pacientes = await pacienteControlador.todos(); 
     const pacienteEditar = await pacienteControlador.buscarporId(req.params.id);

@@ -7,6 +7,13 @@ router.get("/", async (req, res) => {
     res.render("examenes", { examenes, examenEditar: null }); 
 });
 
+router.get("/:id", async (req, res) => {
+    const resultado = await examenesControlador.buscarporId(req.params.id);
+    const examenes = resultado ? [resultado] : []; 
+
+    res.render("examenes", {examenes, examenEditar: null });
+});
+
 router.get("/:id/editar", async (req, res) => {
     const examenes = await examenesControlador.todos(); 
     const examenEditar = await examenesControlador.buscarporId(req.params.id);
