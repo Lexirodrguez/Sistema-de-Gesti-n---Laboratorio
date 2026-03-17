@@ -1,76 +1,107 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Gestión de Pacientes</title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-  </head>
-  <body>
-    <h1>Lista de Pacientes</h1>
-    <nav>
-      <ul>
-        <li><a href="/">Inicio</a></li>
-      </ul>
-    </nav>
 
-    <table>
-      <thead>
+<head>
+  <title>Gestión de Pacientes</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+
+<body>
+  <div class="logout-container">
+    <a href="/auth/logout" class="logout-btn">Cerrar Sesión</a>
+  </div>
+
+  <h1>Lista de Pacientes</h1>
+  <nav>
+    <ul>
+      <li><a href="/">Inicio</a></li>
+    </ul>
+  </nav>
+
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Edad</th>
+        <th>Cédula</th>
+        <th>Fecha de Nacimiento</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% pacientes.forEach(paciente=> { %>
         <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Edad</th>
-          <th>Cédula</th>
-          <th>Fecha de Nacimiento</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% pacientes.forEach(paciente => { %> 
-          <tr>
-            <td><%= paciente.id_pacientes %></td>
-            <td><%= paciente.nombre_pacientes %></td>
-            <td><%= paciente.edad_pacientes %></td>
-            <td><%= paciente.cedula_pacientes %></td>
-            <td><%= paciente.fechaNacimiento_pacientes %></td>
-            <td>
+          <td>
+            <%= paciente.id_pacientes %>
+          </td>
+          <td>
+            <%= paciente.nombre_pacientes %>
+          </td>
+          <td>
+            <%= paciente.edad_pacientes %>
+          </td>
+          <td>
+            <%= paciente.cedula_pacientes %>
+          </td>
+          <td>
+            <%= paciente.fechaNacimiento_pacientes %>
+          </td>
+          <td>
+            <% if (usuario && usuario.rol==='bioanalista' ) { %>
               <form action="/pacientes/<%= paciente.id_pacientes %>/eliminar" method="POST" style="display:inline;">
                 <button type="submit" onclick="return confirm('¿Eliminar paciente?')">Eliminar</button>
               </form>
-              
+
               <a href="/pacientes/<%= paciente.id_pacientes %>/editar">
                 <button type="button">Editar</button>
               </a>
-            </td>
-          </tr> 
+              <% } %>
+          </td>
+
+
+
+        </tr>
         <% }); %>
-      </tbody>
-    </table>
+    </tbody>
+  </table>
 
-    <hr>
+  <hr>
 
-    <section>
-      <h2><%= pacienteEditar ? 'Editar Paciente' : 'Agregar Nuevo Paciente' %></h2>
-      
-      <form action="<%= pacienteEditar ? '/pacientes/' + pacienteEditar.id_pacientes + '/actualizar' : '/pacientes/nuevo' %>" method="POST">
-        
-        <label for="nombre">Nombre:</label> 
-        <input type="text" id="nombre" name="nombre" value="<%= pacienteEditar ? pacienteEditar.nombre_pacientes : '' %>" required> 
-        
-        <label for="edad">Edad:</label> 
-        <input type="number" id="edad" name="edad" value="<%= pacienteEditar ? pacienteEditar.edad_pacientes : '' %>" required> 
+  <section>
+    <h2>
+      <%= pacienteEditar ? 'Editar Paciente' : 'Agregar Nuevo Paciente' %>
+    </h2>
 
-        <label for="cedula">Cédula:</label> 
-        <input type="number" id="cedula" name="cedula" value="<%= pacienteEditar ? pacienteEditar.cedula_pacientes : '' %>" required>
+    <form
+      action="<%= pacienteEditar ? '/pacientes/' + pacienteEditar.id_pacientes + '/actualizar' : '/pacientes/nuevo' %>"
+      method="POST">
 
-        <label for="fechaNacimiento">Fecha de Nacimiento:</label> 
-        <input type="date" id="fechaNacimiento" name="fechaNacimiento" value="<%= pacienteEditar ? pacienteEditar.fechaNacimiento_pacientes : '' %>" required>
-        
-        <button type="submit">
-          <%= pacienteEditar ? 'Guardar Cambios' : 'Agregar Paciente' %>
-        </button>
-        
-        <% if (pacienteEditar) { %>
-          <a href="/pacientes"><button type="button">Cancelar</button></a>
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" value="<%= pacienteEditar ? pacienteEditar.nombre_pacientes : '' %>"
+        required>
+
+      <label for="edad">Edad:</label>
+      <input type="number" id="edad" name="edad" value="<%= pacienteEditar ? pacienteEditar.edad_pacientes : '' %>"
+        required>
+
+      <label for="cedula">Cédula:</label>
+      <input type="number" id="cedula" name="cedula"
+        value="<%= pacienteEditar ? pacienteEditar.cedula_pacientes : '' %>" required>
+
+      <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+      <input type="date" id="fechaNacimiento" name="fechaNacimiento"
+        value="<%= pacienteEditar ? pacienteEditar.fechaNacimiento_pacientes : '' %>" required>
+
+      <button type="submit">
+        <%= pacienteEditar ? 'Guardar Cambios' : 'Agregar Paciente' %>
+      </button>
+
+      <% if (pacienteEditar) { %>
+        <a href="/pacientes"><button type="button">Cancelar</button></a>
         <% } %>
-      </form>
-    </section>
-  </body>
+    </form>
+  </section>
+</body>
+
 </html>

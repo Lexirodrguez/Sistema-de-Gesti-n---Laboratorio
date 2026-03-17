@@ -7,18 +7,21 @@ const ControladorPacientes = {
     },
 
     crear: async (nuevoPaciente) => {
-        if (!nuevoPaciente) return null;
+        if (!nuevoPaciente.nombre || !nuevoPaciente.edad || !nuevoPaciente.cedula || !nuevoPaciente.fechaNacimiento) {
+            throw new Error("Faltan datos obligatorios: nombre, edad, cedula o fechaNacimiento son requeridos.");
+        }
 
-        const payload = { 
-            nombre_pacientes: nuevoPaciente.nombre, 
-            edad_pacientes: nuevoPaciente.edad, 
+        const payload = {
+            nombre_pacientes: nuevoPaciente.nombre,
+            edad_pacientes: nuevoPaciente.edad,
             cedula_pacientes: nuevoPaciente.cedula,
-            fechaNacimiento_pacientes: nuevoPaciente.fechaNacimiento 
+            fechaNacimiento_pacientes: nuevoPaciente.fechaNacimiento
         };
 
         const pacienteCreado = await ModeloPacientes.crear(payload);
         return pacienteCreado;
     },
+
 
     eliminar: async (id) => {
         const eliminado = await ModeloPacientes.eliminar(parseInt(id));
@@ -36,8 +39,8 @@ const ControladorPacientes = {
         }
 
         const payload = {
-            nombre_pacientes: actualizado.nombre, 
-            edad_pacientes: actualizado.edad ? parseInt(actualizado.edad) : null, 
+            nombre_pacientes: actualizado.nombre,
+            edad_pacientes: actualizado.edad ? parseInt(actualizado.edad) : null,
             cedula_pacientes: actualizado.cedula,
             fechaNacimiento_pacientes: actualizado.fechaNacimiento
         };

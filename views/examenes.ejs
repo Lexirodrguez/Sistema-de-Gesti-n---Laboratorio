@@ -1,71 +1,199 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Gestión de Exámenes</title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-  </head>
-  <body>
-    <h1>Lista de Exámenes</h1>
-    <nav>
-      <ul>
-        <li><a href="/">Inicio</a></li>
-      </ul>
-    </nav>
+<html lang="es">
 
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Precio</th>
-          <th>Descripción</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% examenes.forEach(examen => { %> 
+<head>
+  <title>Gestion de Examenes</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <style>
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #fff;
+      border-radius: 10px;
+      padding: 32px 36px;
+      min-width: 320px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+      text-align: center;
+    }
+
+    .modal-box h3 {
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      color: #2d3a4b;
+    }
+
+    .btn-tipo {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      background: #4a7fd4;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      box-sizing: border-box;
+    }
+
+    .btn-tipo:hover {
+      background: #2d5faa;
+    }
+
+    .btn-cancelar {
+      margin-top: 14px;
+      background: #e0e0e0 !important;
+      color: #444 !important;
+    }
+
+    .btn-cancelar:hover {
+      background: #c8c8c8 !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="logout-container">
+    <a href="/auth/logout" class="logout-btn">Cerrar Sesion</a>
+  </div>
+
+  <h1>Lista de Examenes</h1>
+
+  <% var esBioanalista=usuario && usuario.rol==='bioanalista' ; %>
+    <% var esSecretaria=usuario && usuario.rol==='secretaria' ; %>
+
+      <nav>
+        <ul>
+          <li><a href="/">Inicio</a></li>
+          <% if (esBioanalista || esSecretaria) { %>
+            <li><a href="#agregar-examen">+ Agregar Examen</a></li>
+            <% } %>
+        </ul>
+      </nav>
+
+      <table>
+        <thead>
           <tr>
-            <td><%= examen.id_examenes %></td>
-            <td><%= examen.nombre_examenes %></td>
-            <td><%= examen.precio_examenes %>$</td>
-            <td><%= examen.descripcion_examenes %></td>
-            <td>
-              <form action="/examenes/<%= examen.id_examenes %>/eliminar" method="POST" style="display:inline;">
-                <button type="submit" onclick="return confirm('¿Eliminar examen?')">Eliminar</button>
-              </form>
-             
-              <a href="/examenes/<%= examen.id_examenes %>/editar">
-                <button type="button">Editar</button>
-              </a>
-            </td>
-          </tr> 
-        <% }); %>
-      </tbody>
-    </table>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% examenes.forEach(function(examen) { %>
+            <tr>
+              <td>
+                <%= examen.id_examenes %>
+              </td>
+              <td>
+                <%= examen.nombre_examenes %>
+              </td>
+              <td>
+                <%= examen.precio_examenes %>$
+              </td>
+              <td>
+                <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap;">
 
-    <hr>
+                  <% if (esBioanalista) { %>
+                    <button type="button" onclick="abrirModal('<%= examen.id_examenes %>')">Formulario</button>
+                    <a href="/examenes/<%= examen.id_examenes %>/editar">
+                      <button type="button">Editar</button>
+                    </a>
+                    <form action="/examenes/<%= examen.id_examenes %>/eliminar" method="POST" style="display:inline;">
+                      <button type="submit" onclick="return confirm('Eliminar examen?')">Eliminar</button>
+                    </form>
+                    <% } %>
 
-    <section>
-      <h2><%= examenEditar ? 'Editar Examen' : 'Agregar Nuevo Examen' %></h2>
-      
-      <form action="<%= examenEditar ? '/examenes/' + examenEditar.id_examenes + '/actualizar' : '/examenes/nuevo' %>" method="POST">
-        
-        <label for="nombre">Nombre:</label> 
-        <input type="text" id="nombre" name="nombre" value="<%= examenEditar ? examenEditar.nombre_examenes : '' %>" required> 
-        
-        <label for="precio">Precio:</label> 
-        <input type="number" id="precio" name="precio" value="<%= examenEditar ? examenEditar.precio_examenes : '' %>" required> 
+                      <% if (esSecretaria) { %>
+                        <a href="/examenes/<%= examen.id_examenes %>/editar">
+                          <button type="button">Editar</button>
+                        </a>
+                        <form action="/examenes/<%= examen.id_examenes %>/eliminar" method="POST"
+                          style="display:inline;">
+                          <button type="submit" onclick="return confirm('Eliminar examen?')">Eliminar</button>
+                        </form>
+                        <% } %>
 
-        <label for="descripcion">Descripción:</label> 
-        <input type="text" id="descripcion" name="descripcion" value="<%= examenEditar ? examenEditar.descripcion_examenes : '' %>" required>
+                </div>
+              </td>
+            </tr>
+            <% }); %>
+        </tbody>
+      </table>
 
-        <button type="submit">
-          <%= examenEditar ? 'Guardar Cambios' : 'Agregar Examen' %>
-        </button>
-        
-        <% if (examenEditar) { %>
-          <a href="/examenes"><button type="button">Cancelar</button></a>
-        <% } %>
-      </form>
-    </section>
-  </body>
+      <hr>
+
+      <section id="agregar-examen">
+        <% if (esBioanalista || esSecretaria) { %>
+          <h2>
+            <%= examenEditar ? 'Editar Examen' : 'Agregar Nuevo Examen' %>
+          </h2>
+          <form
+            action="<%= examenEditar ? '/examenes/' + examenEditar.id_examenes + '/actualizar' : '/examenes/nuevo' %>"
+            method="POST">
+            <label for="nombre">Nombre (opcional, se auto-genera):</label>
+            <input type="text" id="nombre" name="nombre" value="<%= examenEditar ? examenEditar.nombre_examenes : '' %>"
+              placeholder="Ej: Hematologia Completa">
+
+            <label for="precio">Precio ($):</label>
+            <input type="number" id="precio" name="precio"
+              value="<%= examenEditar ? examenEditar.precio_examenes : '' %>" required>
+
+            <button type="submit">
+              <%= examenEditar ? 'Guardar Cambios' : 'Agregar Examen' %>
+            </button>
+            <% if (examenEditar) { %>
+              <a href="/examenes"><button type="button">Cancelar</button></a>
+              <% } %>
+          </form>
+          <% } %>
+      </section>
+
+      <div id="modal-formulario" class="modal-overlay">
+        <div class="modal-box">
+          <h3>Que tipo de analisis deseas registrar?</h3>
+          <a href="/analisis/hematologia" class="btn-tipo">Hematologia Completa</a>
+          <a href="/analisis/perfil_renal" class="btn-tipo">Perfil Renal</a>
+          <a href="/analisis/perfil_lipidico" class="btn-tipo">Perfil Lipidico</a>
+          <button class="btn-tipo btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+        </div>
+      </div>
+
+      <script>
+        function abrirModal(idExamen) {
+          var eid = idExamen ? '?eid=' + idExamen : '';
+          document.querySelector('[href*="hematologia"]').href = '/analisis/hematologia' + eid;
+          document.querySelector('[href*="perfil_renal"]').href = '/analisis/perfil_renal' + eid;
+          document.querySelector('[href*="perfil_lipidico"]').href = '/analisis/perfil_lipidico' + eid;
+          document.getElementById('modal-formulario').classList.add('active');
+        }
+        function cerrarModal() {
+          document.getElementById('modal-formulario').classList.remove('active');
+        }
+        document.getElementById('modal-formulario').addEventListener('click', function (e) {
+          if (e.target === this) cerrarModal();
+        });
+      </script>
+
+</body>
+
 </html>

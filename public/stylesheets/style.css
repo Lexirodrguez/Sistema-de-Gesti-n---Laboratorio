@@ -1,55 +1,134 @@
 body {
-    font-family: sans-serif;
-    background-color: #f0f2f5;
-    color: #333;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f4f7f6;
     padding: 20px;
-    line-height: 1.6;
+    max-width: 900px;
+    margin: auto;
+    position: relative;
 }
 
-h1, h2 {
+
+h1 {
     text-align: center;
     color: #1a73e8;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    gap: 10px;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.btn,
+nav ul li a,
+table button,
+section button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.btn:hover,
+nav ul li a:hover {
+    background-color: #0056b3;
+}
+
+.btn-eliminar,
+form[action*="eliminar"] button {
+    background-color: #d93025;
+}
+
+form[action*="eliminar"] button:hover {
+    background-color: #a51d16;
 }
 
 table {
     width: 100%;
     background: white;
     border-collapse: collapse;
-    border-radius: 10px;
-    margin-bottom: 30px;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-th, td {
+th,
+td {
     padding: 12px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
     text-align: left;
 }
 
 th {
-    background-color: #1a73e8;
-    color: white;
+    background-color: #f8f9fa;
+    color: #1a73e8;
+}
+
+tr:hover {
+    background-color: #f9f9f9;
 }
 
 section {
     background: white;
     padding: 20px;
-    max-width: 450px;
-    margin: auto;
-    border-radius: 8px;
     border: 1px solid #ddd;
+    border-radius: 10px;
+    margin-top: 20px;
 }
 
-nav ul { 
-  display: flex;
-  justify-content: center;
-  list-style: none;
-  gap: 15px;
-  padding: 0;
+input,
+select {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
-nav ul li a {
-  color: white;
-  background-color: #1a73e8;
-  padding: 10px 20px;
-  border-radius: 5px;
+/* Logout Button */
+.logout-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.logout-btn {
+    background-color: #d93025;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #a51d16;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
 }

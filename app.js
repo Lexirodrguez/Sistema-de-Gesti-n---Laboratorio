@@ -1,14 +1,17 @@
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var jwt = require('jsonwebtoken');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var pacientesRouter = require("./routes/rutapaciente");
 var examenesRouter = require("./routes/rutaexamenes");
 var resultadosRouter = require("./routes/rutaresultados");
+var analisisRouter = require("./routes/rutaanalisis");
+var authRouter = require("./routes/rutausuarios");
 
 var app = express();
 
@@ -22,26 +25,39 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Middleware
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.locals.usuario = null;
+    if (req.cookies && req.cookies.token) {
+        try {
+            const decoded = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+            res.locals.usuario = decoded;
+        } catch (e) {
+            res.locals.usuario = null;
+        }
+    }
+    next();
+});
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 app.use("/pacientes", pacientesRouter);
 app.use("/examenes", examenesRouter);
 app.use("/resultados", resultadosRouter);
+app.use("/analisis", analisisRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use(function (req, res, next) {
+    next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.use(function (err, req, res, next) {
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 module.exports = app;

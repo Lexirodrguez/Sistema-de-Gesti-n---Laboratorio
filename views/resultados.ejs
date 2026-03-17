@@ -1,76 +1,61 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Gestión de Resultados</title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-  </head>
-  <body>
-    <h1>Lista de Resultados</h1>
-    <nav>
-      <ul>
-        <li><a href="/">Inicio</a></li>
-      </ul>
-    </nav>
 
+<head>
+  <title>Gestión de Resultados</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+
+<body>
+  <div class="logout-container">
+    <a href="/auth/logout" class="logout-btn">Cerrar Sesión</a>
+  </div>
+
+  <h1>Lista de Resultados Registrados</h1>
+  <nav>
+    <ul>
+      <li><a href="/">Inicio</a></li>
+      <li><a href="/examenes">Registrar Nuevo</a></li>
+    </ul>
+  </nav>
+
+
+  <section>
     <table>
       <thead>
         <tr>
           <th>ID</th>
-          <th>ID del paciente</th>
-          <th>ID del examen</th>
+          <th>Paciente</th>
+          <th>Examen</th>
           <th>Fecha</th>
-          <th>Resultado</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <% resultados.forEach(resultadoItem => { %> 
+        <% resultados.forEach(res=> { %>
           <tr>
-            <td><%= resultadoItem.id_resultados %></td>
-            <td><%= resultadoItem.pacienteid_resultados %></td>
-            <td><%= resultadoItem.examen_resultados %></td>
-            <td><%= resultadoItem.fecha_resultados %></td>
-            <td><%= resultadoItem.resultado_resultados %></td>
             <td>
-              <form action="/resultados/<%= resultadoItem.id_resultados %>/eliminar" method="POST" style="display:inline;">
-                <button type="submit" onclick="return confirm('¿Eliminar resultado?')">Eliminar</button>
-              </form>
-              
-              <a href="/resultados/<%= resultadoItem.id_resultados %>/editar">
-                <button type="button">Editar</button>
-              </a>
+              <%= res.id_resultados %>
             </td>
-          </tr> 
-        <% }); %>
+            <td>
+              <%= res.nombre_pacientes %>
+            </td>
+            <td>
+              <%= res.nombre_examenes %>
+            </td>
+            <td>
+              <%= new Date(res.fecha_resultados).toLocaleDateString() %>
+            </td>
+            <td>
+              <form action="/resultados/<%= res.id_resultados %>/eliminar" method="POST" style="display:inline;">
+                <button type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar?')">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
       </tbody>
     </table>
+  </section>
+</body>
 
-    <hr>
-
-    <section>
-      <h2><%= resultadoEditar ? 'Editar Resultado' : 'Registrar Nuevo Resultado' %></h2>
-      
-      <form action="<%= resultadoEditar ? '/resultados/' + resultadoEditar.id_resultados + '/actualizar' : '/resultados/nuevo' %>" method="POST">
-        
-        <label for="pacienteId">ID Paciente:</label> 
-        <input type="number" id="pacienteId" name="pacienteId" value="<%= resultadoEditar ? resultadoEditar.pacienteid_resultados : '' %>" required> 
-        
-        <label for="examenId">ID Examen:</label> 
-        <input type="number" id="examenId" name="examenId" value="<%= resultadoEditar ? resultadoEditar.examen_resultados : '' %>" required> 
-
-        <label for="fecha">Fecha:</label> 
-        <input type="date" id="fecha" name="fecha" value="<%= resultadoEditar ? resultadoEditar.fecha_resultados : '' %>" required>
-
-        <label for="resultado">Descripción del Resultado:</label> 
-        <input type="text" id="resultado" name="resultado" value="<%= resultadoEditar ? resultadoEditar.resultado_resultados : '' %>" required>
-        
-        <button type="submit">
-          <%= resultadoEditar ? 'Guardar Cambios' : 'Registrar Resultado' %>
-        </button>
-        
-        <% if (resultadoEditar) { %>
-          <a href="/resultados"><button type="button">Cancelar</button></a>
-        <% } %>
-      </form>
-    </section>
-  </body>
 </html>

@@ -1,42 +1,40 @@
 const express = require("express");
 const router = express.Router();
 const resultadosControlador = require("../controladores/resultadosControlador.js");
+const pacientesControlador = require("../controladores/pacienteControlador.js");
+const examenesControlador = require("../controladores/examenesControlador.js");
+const { verificarToken, verificarRol } = require("../middleware/auth");
 
-router.get("/", async (req, res) => {
+
+router.get("/", verificarToken, async (req, res) => {
     const resultados = await resultadosControlador.todos();
-    res.render("resultados", { resultados, resultadoEditar: null }); 
+    const pacientes = await pacientesControlador.todos();
+    const examenes = await examenesControlador.todos();
+
+    res.render("resultados", {
+        resultados,
+        resultadoEditar: null,
+        pacientes,
+        examenes,
+    });
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", verificarToken, async (req, res) => {
     const resultado = await resultadosControlador.buscarporId(req.params.id);
-    const resultados = resultado ? [resultado] : []; 
+    const resultados = resultado ? [resultado] : [];
 
-    res.render("resultados", { resultados: resultados,resultadoEditar: null });
+    res.render("resultados", { resultados: resultados, resultadoEditar: null });
 });
 
-router.get("/:id/editar", async (req, res) => {
-    const resultados = await resultadosControlador.todos(); 
-    const resultadoEditar = await resultadosControlador.buscarporId(req.params.id);
-    if (resultadoEditar) {
-        res.render("resultados", { resultados, resultadoEditar }); 
-    } else {
-        res.status(404).send("Resultado no encontrado");
+router.post("/:id/eliminar", verificarToken, verificarRol(['bioanalista']), async (req, res) => {
+
+    try {
+        await resultadosControlador.eliminar(req.params.id);
+        res.redirect("/resultados");
+    } catch (error) {
+        res.status(500).json({ mensaje: "Error al eliminar resultado" });
     }
 });
 
-router.post("/:id/actualizar", async (req, res) => {
-    await resultadosControlador.actualizar(req.params.id, req.body);
-    res.redirect("/resultados"); 
-});
-
-router.post("/:id/eliminar", async (req, res) => {
-    await resultadosControlador.eliminar(req.params.id);
-    res.redirect("/resultados");
-});
-
-router.post("/nuevo", async (req, res) => {
-    await resultadosControlador.crear(req.body);
-    res.redirect("/resultados");
-});
 
 module.exports = router;

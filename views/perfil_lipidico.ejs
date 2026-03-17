@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <title>Perfil Lipidico</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+
+<body>
+  <div class="logout-container">
+    <a href="/auth/logout" class="logout-btn">Cerrar Sesion</a>
+  </div>
+
+  <h1>Resultados: Perfil Lipidico</h1>
+  <nav>
+    <ul>
+      <li><a href="/">Inicio</a></li>
+      <li><a href="/examenes">Volver a Examenes</a></li>
+    </ul>
+  </nav>
+
+  <section>
+    <h2>Datos del Resultado</h2>
+    <form action="/analisis/guardar-lipidico" method="POST">
+
+      <label for="examenId">Examen asociado:</label>
+      <select name="examenId" id="examenId" required>
+        <% examenes.forEach(function(e) { %>
+          <option value="<%= e.id_examenes %>" <%=e.id_examenes==selectedEid ? 'selected' : '' %>>
+            <%= e.nombre_examenes %>
+          </option>
+          <% }); %>
+      </select>
+
+      <label for="pacienteId">Seleccionar Paciente:</label>
+      <select name="pacienteId" id="pacienteId" required>
+        <% pacientes.forEach(function(p) { %>
+          <option value="<%= p.id_pacientes %>">
+            <%= p.nombre_pacientes %>
+          </option>
+          <% }); %>
+      </select>
+
+      <label for="colesterol_total">Colesterol Total (mg/dL):</label>
+      <input type="number" step="0.01" id="colesterol_total" name="colesterol_total" placeholder="Ej: 180" required>
+
+      <label for="trigliceridos">Trigliceridos (mg/dL):</label>
+      <input type="number" step="0.01" id="trigliceridos" name="trigliceridos" placeholder="Ej: 150" required>
+
+      <label for="colesterol_LDL_">Colesterol LDL (mg/dL):</label>
+      <input type="number" step="0.01" id="colesterol_LDL_" name="colesterol_LDL_" placeholder="Ej: 100" required>
+
+      <label for="triada_lipidica_aterogenica">Triada Lipidica:</label>
+      <input type="text" id="triada_lipidica_aterogenica" name="triada_lipidica_aterogenica"
+        placeholder="Ej: Normal o Presencia">
+
+      <button type="submit">Guardar Resultado</button>
+      <a href="/examenes"><button type="button">Cancelar</button></a>
+    </form>
+  </section>
+</body>
+
+</html>
