@@ -15,7 +15,7 @@ PORT=3000
 ## Seguridad y Roles
 - El sistema utiliza **JWT (JSON Web Tokens)** para asegurar el acceso, los cuales se almacenan automáticamente en **cookies** del navegador.
 - **Bioanalista**: Tiene acceso total al sistema, incluyendo registro de usuarios, edición y eliminación de datos.
-- **Secretaria**: Puede ver pacientes, registrar nuevos pacientes, añadir exámenes y ver resultados. No tiene permiso para editar o eliminar registros existentes o rellenar formularios de examenes.
+- **Secretaria**: Puede ver pacientes, registrar nuevos pacientes, añadir exámenes, editarlos, eliminarlos y por otro lado puede ver resultados y eliminarlos. No tiene permiso para rellenar formularios de examenes.
 
 ## Usuarios por Defecto
 - Usuario: `bioanalista`
