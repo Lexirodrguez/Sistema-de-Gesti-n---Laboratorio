@@ -7,7 +7,7 @@ const pacienteControlador = require("../controladores/pacienteControlador");
 const examenesControlador = require("../controladores/examenesControlador");
 const { verificarToken, verificarRol } = require("../middleware/auth");
 
-// ── Hematologia ───────────────────────────────────────────────────────────────
+// Hematologia
 router.get("/hematologia", verificarToken, verificarRol(['bioanalista']), async (req, res) => {
     try {
         const pacientes = await pacienteControlador.todos();
@@ -28,7 +28,7 @@ router.post("/guardar-hematologia", verificarToken, verificarRol(['bioanalista']
     }
 });
 
-// ── Perfil Renal ──────────────────────────────────────────────────────────────
+// Perfil Renal
 router.get("/perfil_renal", verificarToken, verificarRol(['bioanalista']), async (req, res) => {
     try {
         const pacientes = await pacienteControlador.todos();
@@ -49,7 +49,7 @@ router.post("/guardar-perfilrenal", verificarToken, verificarRol(['bioanalista']
     }
 });
 
-// ── Perfil Lipidico ───────────────────────────────────────────────────────────
+// Perfil Lipidico
 router.get("/perfil_lipidico", verificarToken, verificarRol(['bioanalista']), async (req, res) => {
     try {
         const pacientes = await pacienteControlador.todos();

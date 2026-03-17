@@ -59,23 +59,6 @@ const usuarioControlador = {
         res.clearCookie('token', { path: '/' });
         res.redirect('/auth/login');
     },
-
-
-    registro: async (req, res) => {
-
-        const { nombre, password, rol } = req.body;
-
-        if (!nombre || !password) {
-            return res.status(400).json({ mensaje: "Nombre y contraseña son obligatorios." });
-        }
-
-        try {
-            await ModeloUsuario.crear({ nombre, password, rol });
-            res.status(201).json({ mensaje: "Usuario registrado con éxito." });
-        } catch (error) {
-            res.status(500).json({ mensaje: "Error al registrar usuario.", error: error.message });
-        }
-    }
 };
 
 module.exports = usuarioControlador;
