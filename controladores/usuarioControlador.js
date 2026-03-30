@@ -49,7 +49,7 @@ const usuarioControlador = {
             });
 
 
-            res.redirect('/pacientes');
+            res.redirect('/');
         } catch (error) {
             res.render('login', { error: "Error en el servidor: " + error.message });
         }
@@ -59,6 +59,25 @@ const usuarioControlador = {
         res.clearCookie('token', { path: '/' });
         res.redirect('/auth/login');
     },
+
+    mostrarRegistro: (req, res) => {
+    res.render('registro', { error: null });
+    },
+
+    registro: async (req, res) => {
+    const { nombre, password, rol } = req.body;
+
+    if (!nombre || !password) {
+        return res.render('registro', { error: "Nombre y contraseña son obligatorios." });
+    }
+
+    try {
+        await ModeloUsuario.crear({ nombre, password, rol });
+        res.redirect('/pacientes'); 
+    } catch (error) {
+        res.render('registro', { error: "Error al registrar: " + error.message });
+    }
+    }
 };
 
 module.exports = usuarioControlador;
